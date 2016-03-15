@@ -14,6 +14,14 @@ if (Meteor.isClient) {
             Session.set('counter', Session.get('counter') + 1);
         }
     });
+
+    Template.foo.helpers({
+        // returns a random number between 0 and 10, every second
+        randomNumber: function() {
+            Chronos.liveUpdate();
+            return Math.round(Math.random() * 10);
+        }
+    });
 }
 
 if (Meteor.isServer) {
