@@ -2,7 +2,7 @@ Package.describe({
   name: 'leshik:utils-left-pad',
   version: '0.0.1',
   // Brief, one-line summary of the package.
-  summary: '',
+  summary: 'Left pads a primitive of type string or number with a given number of "padders".',
   // URL to the Git repository containing the source code for this package.
   git: '',
   // By default, Meteor will default to using README.md for documentation.
