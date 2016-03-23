@@ -30,15 +30,33 @@
             this.duration = duration; // seconds
             this.interval = interval; // seconds
             this.secondsToTimer();
+
+            Object.defineProperties(this, {
+                'seconds': {
+                    get: function() {
+                        return leftPad(this._seconds);
+                    }
+                },
+                'minutes': {
+                    get: function() {
+                        return leftPad(this._minutes);
+                    }
+                },
+                'hours': {
+                    get: function() {
+                        return leftPad(this._hours);
+                    }
+                }
+            })
         }
 
         secondsToTimer() {
             const seconds_in_minute = 60,
                 seconds_in_hour = 3600;
 
-            this.hours = Math.floor(this.duration / seconds_in_hour);
-            this.minutes = Math.floor((this.duration - this.hours * seconds_in_hour) / seconds_in_minute);
-            this.seconds = this.duration % seconds_in_minute;
+            this._hours = Math.floor(this.duration / seconds_in_hour);
+            this._minutes = Math.floor((this.duration - this._hours * seconds_in_hour) / seconds_in_minute);
+            this._seconds = this.duration % seconds_in_minute;
         }
 
         start() {
@@ -50,17 +68,17 @@
         }
 
         countdown() {
-            if (!this.seconds && !this.minutes && !this.hours) {
+            if (!this._seconds && !this._minutes && !this._hours) {
                 this.stop()
-            } else if (this.seconds > 0) {
-                this.seconds -= 1;
-            } else if (this.seconds === 0 && this.minutes > 0) {
-                this.minutes -= 1;
-                this.seconds = 59;
-            } else if (this.minutes === 0 && this.hours > 0) {
-                this.hours -= 1;
-                this.minutes = 59;
-                this.seconds = 59;
+            } else if (this._seconds > 0) {
+                this._seconds -= 1;
+            } else if (this._seconds === 0 && this._minutes > 0) {
+                this._minutes -= 1;
+                this._seconds = 59;
+            } else if (this._minutes === 0 && this._hours > 0) {
+                this._hours -= 1;
+                this._minutes = 59;
+                this._seconds = 59;
             }
 
             this.updateSession();
