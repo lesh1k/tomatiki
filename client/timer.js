@@ -33,7 +33,6 @@
 
     Template.timer.events({
         'click .timer__trigger': function(event, template) {
-            debugger
             Session.set('button_label', 'Stop');
             Session.set('timer_state', 'running');
         }
