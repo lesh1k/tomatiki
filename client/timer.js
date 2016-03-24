@@ -24,12 +24,32 @@
         }
     };
 
+    const DEFAULTS = {
+        ms_in_second: 1000,
+        seconds_in_minute: 60,
+        minutes_in_hour: 60,
+        seconds_in_hour: 3600,
+        pomodoro_length: 25 // minutes
+    }
+
     class Timer {
 
-        constructor(duration, interval=1) {
-            this.duration = duration; // seconds
-            this.interval = interval; // seconds
-            this.secondsToTimer();
+        constructor(duration=25) {
+            this.duration = duration * DEFAULTS.seconds_in_minutes;
+            let pomodoro = Pomodori.findOne({state: 'running'});
+            if (pomodoro) {
+                this.pomodoro = pomodoro;
+                this.restore();
+            } else {
+                this._seconds = 0;
+                this._minutes = duration % DEFAULTS.minutes_in_hour;
+                this._hours = Math.floor(duration / DEFAULTS.minutes_in_hour);
+            }
+
+
+            this.seconds = new ReactiveVar(0);
+            this.minutes = new ReactiveVar(0);
+            this.hours = new ReactiveVar(0);
 
             Object.defineProperties(this, {
                 'seconds': {
@@ -51,25 +71,54 @@
         }
 
         secondsToTimer() {
-            const seconds_in_minute = 60,
-                seconds_in_hour = 3600;
+            this._hours = Math.floor(this.duration / DEFAULTS.seconds_in_hour);
+            this._minutes = Math.floor((this.duration - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
+            this._seconds = this.duration % DEFAULTS.seconds_in_minute;
+        }
 
-            this._hours = Math.floor(this.duration / seconds_in_hour);
-            this._minutes = Math.floor((this.duration - this._hours * seconds_in_hour) / seconds_in_minute);
-            this._seconds = this.duration % seconds_in_minute;
+        restore() {
+            let ms_left = this.pomodoro.end - new Date();
+            if (ms_left > 0) {
+                this.duration = Math.floor(ms_left / DEFAULTS.ms_in_second);
+                this.secondsToTimer();
+                this.start();
+            }
+        }
+
+        setupNew() {
+            let now = new Date();
+            this.pomodoro = Pomodori.insert({
+                state: 'running',
+                created: now,
+                end: this.computeEndDate(now)
+            });
         }
 
         start() {
-            this.interval_id = window.setInterval(this.countdown.bind(this), 1000 * this.interval);
+            if (!this.pomodoro) {
+                this.setupNew();
+            }
+
+            this.interval_id = window.setInterval(this.countdown.bind(this),
+                                                DEFAULTS.ms_in_second);
+            this.state = this.pomodoro.state;
         }
 
-        stop() {
+        stop(reason) {
             window.clearInterval(this.interval_id);
+            Pomodori.update(this.pomodoro, {$set: {state: reason}});
+            this.state = this.pomodoro.state;
+            delete this.pomodoro;
+        }
+
+        computeEndDate(now) {
+            let delta_ms = this.duration * DEFAULTS.seconds_in_minute * DEFAULTS.ms_in_second;
+            return new Date(now.getTime() + delta_ms);
         }
 
         countdown() {
             if (!this._seconds && !this._minutes && !this._hours) {
-                this.stop()
+                this.stop('completed')
             } else if (this._seconds > 0) {
                 this._seconds -= 1;
             } else if (this._seconds === 0 && this._minutes > 0) {
@@ -91,7 +140,7 @@
         }
     }
 
-    const TIMER = new Timer(25*60);
+    const TIMER = new Timer();
 
     Template.timer.helpers({
         hours: function() { return Session.get('hours') || TIMER.hours; },
@@ -104,14 +153,10 @@
 
     Template.timer.events({
         'click .timer__trigger': function(event, template) {
-            if (Session.get('timer_state') === 'stopped') {
+            if (TIMER.state === 'stopped') {
                 TIMER.start();
-                Session.set('button_label', 'Stop');
-                Session.set('timer_state', 'running');
             } else {
                 TIMER.stop();
-                Session.set('button_label', 'Start');
-                Session.set('timer_state', 'stopped');
             }
         }
     });
