@@ -21,5 +21,6 @@ Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
   api.use('leshik:utils-leftpad');
-  api.addFiles('utils-leftpad-tests.js');
+  api.addFiles('utils-leftpad-tests-client.js', 'client');
+  api.addFiles('utils-leftpad-tests-server.js', 'server');
 });
