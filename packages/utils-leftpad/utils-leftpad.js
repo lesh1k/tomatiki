@@ -7,7 +7,15 @@ leftPad = function(primitive, width=2, padder='0') {
     }
 
     if (Number.isNaN(primitive)) {
-        throw new TypeError('Variable of type Number is NaN');
+        throw new Error('Variable of type Number is NaN');
+    }
+
+    if (typeof padder !== 'string') {
+        throw new TypeError(`The padder (char used for padding) should be string. Received ${typeof padder}`);
+    }
+
+    if (padder.length !== 1) {
+        throw new Error('The padder (char used for padding) should be exactly 1-char long.');
     }
 
     let str = String(primitive);
@@ -16,4 +24,4 @@ leftPad = function(primitive, width=2, padder='0') {
     }
 
     return str;
-}
+};
