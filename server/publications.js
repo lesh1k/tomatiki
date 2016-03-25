@@ -1,3 +1,3 @@
-// Meteor.publish('Pomodori', function() {
-//     return Pomodori.find();
-// });
+Meteor.publish('pomodori', function() {
+    return Pomodori.find();
+});

@@ -1,10 +1,14 @@
 <template name="timer">
-    <div class="timer">
-        <div class="hours">{{hours}}</div>
-        <div class="timer__separator">{{timer_separator}}</div>
-        <div class="minutes">{{minutes}}</div>
-        <div class="timer_separator">{{timer_separator}}</div>
-        <div class="seconds">{{seconds}}</div>
-    </div>
-    <button class="timer__trigger button" type="button">Start</button>
+    {{#if Template.subscriptionsReady}}
+        <div class="timer">
+            <div class="hours">{{hours}}</div>
+            <div class="timer__separator">{{timer_separator}}</div>
+            <div class="minutes">{{minutes}}</div>
+            <div class="timer_separator">{{timer_separator}}</div>
+            <div class="seconds">{{seconds}}</div>
+        </div>
+        <button class="timer__trigger button" type="button">Start</button>
+    {{else}}
+        Loading...
+    {{/if}}
 </template>

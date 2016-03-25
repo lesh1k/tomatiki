@@ -128,7 +128,13 @@
     }
 
 
-    const TIMER = new Timer();
+    var TIMER;
+
+    Template.timer.onCreated(function() {
+        this.subscribe('pomodori', function() {
+            TIMER = new Timer();
+        });
+    });
 
     Template.timer.helpers({
         hours: function() { return TIMER.hours.get(); },
