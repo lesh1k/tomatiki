@@ -52,7 +52,8 @@
                 this.secondsToTimer(seconds_left);
                 this.start();
             } else {
-                throw new Error('Pomodoro expired');
+                Pomodori.update(this.pomodoro._id, {$set: {state: DEFAULTS.state.completed}});
+                this.setupNew();
             }
         }
 
