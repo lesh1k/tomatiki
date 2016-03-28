@@ -55,3 +55,14 @@ Tinytest.add('leshik:timer - Duration is computed correctly for default values',
     // Default duration is 25 minutes which equals 1500000ms
     test.equal(timer.duration, 1500000);
 });
+
+Tinytest.add('leshik:timer - milisecondsToTime works as expected', (test) => {
+    let dummy = {time: {}},
+        ms = 123914555; // i.e. 34hrs 25min 14s 555ms
+    Timer.prototype.milisecondsToTime.call(dummy, ms);
+    let {hours, minutes, seconds, miliseconds} = dummy.time;
+    test.equal(hours, 34);
+    test.equal(minutes, 25);
+    test.equal(seconds, 14);
+    test.equal(miliseconds, 555);
+});
