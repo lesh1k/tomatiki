@@ -13,16 +13,19 @@ const DEFAULTS = {
     }
 }
 
+
 Timer = class Timer {
 
     constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000, running=false}={}) {
         this.running = running;
+
         this.time = new ReactiveDict();
         this.time.set('hours', hours);
         this.time.set('minutes', minutes);
         this.time.set('seconds', seconds);
         this.time.set('miliseconds', miliseconds);
-        this.duration = this.getTotalMiliseconds(this.time);
+
+        this.duration = this.getTotalMiliseconds(this.time.all());
 
 
         // this.seconds = new ReactiveVar('00');
