@@ -1,3 +1,5 @@
+'use strict';
+
 const DEFAULTS = {
     ms_in_second: 1000,
     seconds_in_minute: 60,
@@ -13,35 +15,26 @@ const DEFAULTS = {
 
 Timer = class Timer {
 
-    constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000}={}) {
-        this.state = {
-            current: "stopped",
-            hours: hours,
-            minutes: minutes,
-            seconds: seconds,
-            miliseconds: miliseconds
-        };
-        this.duration = this.getTotalMiliseconds(this.state);
+    constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000, running=false}={}) {
+        this.running = running;
+        this.time = new ReactiveDict();
+        this.time.set('hours', hours);
+        this.time.set('minutes', minutes);
+        this.time.set('seconds', seconds);
+        this.time.set('miliseconds', miliseconds);
+        this.duration = this.getTotalMiliseconds(this.time);
 
 
-        this.duration = duration * DEFAULTS.seconds_in_minute;
-        this.seconds = new ReactiveVar('00');
-        this.minutes = new ReactiveVar('00');
-        this.hours = new ReactiveVar('00');
-
-        let pomodoro = Pomodori.findOne({state: DEFAULTS.state.running});
-        if (pomodoro) {
-            console.log('Constructor::Found Pomodoro, will restore data from it.');
-            this.pomodoro = pomodoro;
-            this.restore();
-        } else {
-            console.log('Constructor::No running Pomodoro found, init timer with defaults.');
-            this._seconds = 0;
-            this._minutes = duration % DEFAULTS.minutes_in_hour;
-            this._hours = Math.floor(duration / DEFAULTS.minutes_in_hour);
-        }
-
-        this.updateTime();
+        // this.seconds = new ReactiveVar('00');
+        // this.minutes = new ReactiveVar('00');
+        // this.hours = new ReactiveVar('00');
+        //
+        // console.log('Constructor::No running Pomodoro found, init timer with defaults.');
+        // this._seconds = 0;
+        // this._minutes = duration % DEFAULTS.minutes_in_hour;
+        // this._hours = Math.floor(duration / DEFAULTS.minutes_in_hour);
+        //
+        // this.updateTime();
     }
 
     getTotalMiliseconds({hours=0, minutes=0, seconds=0, miliseconds=0}={}) {
@@ -53,6 +46,15 @@ Timer = class Timer {
         hours && (total_ms += hours * DEFAULTS.seconds_in_hour * DEFAULTS.ms_in_second);
 
         return total_ms;
+    }
+
+    milisecondsToTime(ms) {
+        this.time.set('hours', Math.floor(ms / DEFAULTS.seconds_in_hour / DEFAULTS.ms_in_second));
+        this.time.set('minutes', 1);
+        this._hours = Math.floor(seconds / DEFAULTS.seconds_in_hour);
+        this._minutes = Math.floor((seconds - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
+        this._seconds = seconds % DEFAULTS.seconds_in_minute;
+        this.updateTime();
     }
 
     secondsToTimer(seconds) {
