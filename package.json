@@ -1,0 +1,21 @@
+{
+    "name": "tomatiki",
+    "version": "0.0.1",
+    "description": "Sample meteor app",
+    "main": "index.js",
+    "scripts": {
+        "start": "meteor --settings settings.json",
+        "production": "meteor --settings settings.json",
+        "test": "meteor test-packages ./packages/* -p 3030"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lesh1k/tomatiki.git"
+    },
+    "author": "Alexei Dvorac",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/lesh1k/tomatiki/issues"
+    },
+    "homepage": "https://github.com/lesh1k/tomatiki#readme"
+}
