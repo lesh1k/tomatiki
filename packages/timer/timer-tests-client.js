@@ -35,6 +35,21 @@ Tinytest.add('leshik:timer - Correctly parse input on timer creation', (test) =>
     test.equal(timer.time.get('miliseconds'), 0);
 });
 
+Tinytest.add('leshik:timer - getTotalMiliseconds return expected number of ms', (test) => {
+    let ms = Timer.prototype.getTotalMiliseconds({
+        hours: 2,
+        minutes: 34,
+        seconds: 15,
+        miliseconds: 888
+    });
+
+    let expected = 2 * 3600 * 1000 // hours
+        + 34 * 60 * 1000 // minutes
+        + 15 * 1000 // seconds
+        + 888; // miliseconds
+    test.equal(ms, expected);
+});
+
 Tinytest.add('leshik:timer - Duration is computed correctly for default values', (test) => {
     let timer = new Timer();
     // Default duration is 25 minutes which equals 1500000ms
