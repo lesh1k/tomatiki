@@ -52,11 +52,18 @@ Timer = class Timer {
     }
 
     milisecondsToTime(ms=this.duration) {
-        this.time.set('hours', Math.floor(ms / DEFAULTS.seconds_in_hour / DEFAULTS.ms_in_second));
-        this.time.set('minutes', 1);
-        this._hours = Math.floor(seconds / DEFAULTS.seconds_in_hour);
-        this._minutes = Math.floor((seconds - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
-        this._seconds = seconds % DEFAULTS.seconds_in_minute;
+        this.time.set('hours', Math.floor(ms / DEFAULTS.ms_in_second / DEFAULTS.seconds_in_hour));
+        this.time.set(
+            'minutes',
+            Math.floor(
+                ms / DEFAULTS.ms_in_second / DEFAULTS.seconds_in_minute % DEFAULTS.minutes_in_hour
+            )
+        );
+        this.time.set('seconds', Math.floor(ms / DEFAULTS.ms_in_second % DEFAULTS.seconds_in_minute));
+        this.time.set('miliseconds', Math.floor(ms % DEFAULTS.ms_in_second));
+        // this._hours = Math.floor(seconds / DEFAULTS.seconds_in_hour);
+        // this._minutes = Math.floor((seconds - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
+        // this._seconds = seconds % DEFAULTS.seconds_in_minute;
     }
 
     secondsToTimer(seconds) {

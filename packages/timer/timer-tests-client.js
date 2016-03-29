@@ -56,13 +56,13 @@ Tinytest.add('leshik:timer - Duration is computed correctly for default values',
     test.equal(timer.duration, 1500000);
 });
 
-Tinytest.add('leshik:timer - milisecondsToTime works as expected', (test) => {
-    let dummy = {time: {}},
+Tinytest.add('leshik:timer - milisecondsToTime updates Timer.time ReactiveDict', (test) => {
+    let dummy = {time: new ReactiveDict()},
         ms = 123914555; // i.e. 34hrs 25min 14s 555ms
     Timer.prototype.milisecondsToTime.call(dummy, ms);
-    let {hours, minutes, seconds, miliseconds} = dummy.time;
-    test.equal(hours, 34);
-    test.equal(minutes, 25);
-    test.equal(seconds, 14);
-    test.equal(miliseconds, 555);
+
+    test.equal(dummy.time.get('hours'), 34);
+    test.equal(dummy.time.get('minutes'), 25);
+    test.equal(dummy.time.get('seconds'), 14);
+    test.equal(dummy.time.get('miliseconds'), 555);
 });
