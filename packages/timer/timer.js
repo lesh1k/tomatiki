@@ -105,8 +105,7 @@ Timer = class Timer {
         delete this.pomodoro;
     }
 
-    computeEndDate(now) {
-        let delta_ms = this.duration * DEFAULTS.ms_in_second;
+    static computeEndDate(delta_ms, now=new Date()) {
         return new Date(now.getTime() + delta_ms);
     }
 
@@ -126,11 +125,4 @@ Timer = class Timer {
 
         this.updateTime();
     }
-
-    updateTime() {
-        this.seconds.set(leftPad(this._seconds));
-        this.minutes.set(leftPad(this._minutes));
-        this.hours.set(leftPad(this._hours));
-    }
-
 };

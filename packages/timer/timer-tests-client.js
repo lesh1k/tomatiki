@@ -57,12 +57,39 @@ Tinytest.add('leshik:timer - Duration is computed correctly for default values',
 });
 
 Tinytest.add('leshik:timer - milisecondsToTime updates Timer.time ReactiveDict', (test) => {
-    let dummy = {time: new ReactiveDict()},
+    let mock = {time: new ReactiveDict()},
         ms = 123914555; // i.e. 34hrs 25min 14s 555ms
-    Timer.prototype.milisecondsToTime.call(dummy, ms);
+    Timer.prototype.milisecondsToTime.call(mock, ms);
 
-    test.equal(dummy.time.get('hours'), 34);
-    test.equal(dummy.time.get('minutes'), 25);
-    test.equal(dummy.time.get('seconds'), 14);
-    test.equal(dummy.time.get('miliseconds'), 555);
+    test.equal(mock.time.get('hours'), 34);
+    test.equal(mock.time.get('minutes'), 25);
+    test.equal(mock.time.get('seconds'), 14);
+    test.equal(mock.time.get('miliseconds'), 555);
+});
+
+Tinytest.add('leshik:timer - computeEndDate returns a date object', (test) => {
+    let date_now = new Date('Tue Mar 29 2016 13:50:00 GMT+0300 (EEST)'),
+        delta_ms = 25 * 60 * 1000, // 25 minutes in ms
+        expected = new Date('Tue Mar 29 2016 14:15:00 GMT+0300 (EEST)');
+
+    let actual = Timer.computeEndDate(delta_ms, date_now);
+    test.instanceOf(actual, Date);
+});
+
+Tinytest.add('leshik:timer - #1 computeEndDate computes Date using delta_ms correctly', (test) => {
+    let date_now = new Date('Tue Mar 29 2016 13:50:00 GMT+0300 (EEST)'),
+        delta_ms = 25 * 60 * 1000, // 25 minutes in ms
+        expected = new Date('Tue Mar 29 2016 14:15:00 GMT+0300 (EEST)');
+
+    let actual = Timer.computeEndDate(delta_ms, date_now);
+    test.equal(actual, expected);
+});
+
+Tinytest.add('leshik:timer - #2 computeEndDate computes Date using delta_ms correctly', (test) => {
+    let date_now = new Date('Tue Mar 29 2016 13:50:00 GMT+0300 (EEST)'),
+        delta_ms = 123914555, // i.e. 34hrs 25min 14s 555ms
+        expected = new Date('Thu Mar 31 2016 00:15:14.555 GMT+0300 (EEST)');
+
+    let actual = Timer.computeEndDate(delta_ms, date_now);
+    test.equal(actual, expected);
 });
