@@ -76,7 +76,7 @@ Tinytest.add('leshik:timer - computeEndDate returns a date object', (test) => {
     test.instanceOf(actual, Date);
 });
 
-Tinytest.add('leshik:timer - #1 computeEndDate computes Date using delta_ms correctly', (test) => {
+Tinytest.add('leshik:timer - computeEndDate (test #1) computes Date using delta_ms correctly', (test) => {
     let date_now = new Date('Tue Mar 29 2016 13:50:00 GMT+0300 (EEST)'),
         delta_ms = 25 * 60 * 1000, // 25 minutes in ms
         expected = new Date('Tue Mar 29 2016 14:15:00 GMT+0300 (EEST)');
@@ -85,11 +85,35 @@ Tinytest.add('leshik:timer - #1 computeEndDate computes Date using delta_ms corr
     test.equal(actual, expected);
 });
 
-Tinytest.add('leshik:timer - #2 computeEndDate computes Date using delta_ms correctly', (test) => {
+Tinytest.add('leshik:timer - computeEndDate (test #2) computes Date using delta_ms correctly', (test) => {
     let date_now = new Date('Tue Mar 29 2016 13:50:00 GMT+0300 (EEST)'),
         delta_ms = 123914555, // i.e. 34hrs 25min 14s 555ms
         expected = new Date('Thu Mar 31 2016 00:15:14.555 GMT+0300 (EEST)');
 
     let actual = Timer.computeEndDate(delta_ms, date_now);
     test.equal(actual, expected);
+});
+
+Tinytest.add('leshik:timer - Timer.start() changes Timer.running to "true"', (test) => {
+    let timer = new Timer({hours: 1, minutes: 0, seconds: 0, running: false});
+    timer.start();
+    test.isTrue(timer.running);
+});
+
+Tinytest.add('leshik:timer - Timer.stop() changes Timer.running to "false"', (test) => {
+    let timer = new Timer({hours: 1, minutes: 0, seconds: 0, running: true});
+    timer.stop();
+    test.isFalse(timer.running);
+});
+
+Tinytest.add('leshik:timer - Timer.start() does countdown', (test) => {
+    let timer = new Timer({hours: 1, minutes: 0, seconds: 0});
+    timer.start();
+    window.setTimeout(function() {
+        timer.stop();
+        test.equal(this.timer.state, 'stopped');
+        test.equal(timer.time.get('hours'), 0);
+        test.equal(timer.time.get('minutes'), 59);
+        test.equal(timer.get('seconds'), 55);
+    }, 5000);
 });

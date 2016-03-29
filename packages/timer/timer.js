@@ -51,19 +51,6 @@ Timer = class Timer {
         this.time.set('miliseconds', Math.floor(ms % DEFAULTS.ms_in_second));
     }
 
-    restore() {
-        console.log('Restoring Pomodoro: ', this.pomodoro);
-        let ms_left = this.pomodoro.end - new Date();
-        if (ms_left > 0) {
-            let seconds_left = Math.floor(ms_left / DEFAULTS.ms_in_second);
-            this.secondsToTimer(seconds_left);
-            this.start();
-        } else {
-            Pomodori.update(this.pomodoro._id, {$set: {state: DEFAULTS.state.completed}});
-            this.setupNew();
-        }
-    }
-
     setupNew() {
         let now = new Date(),
             pomodoro_id = Pomodori.insert({
