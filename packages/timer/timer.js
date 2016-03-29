@@ -25,22 +25,10 @@ Timer = class Timer {
         this.time.set('seconds', seconds);
         this.time.set('miliseconds', miliseconds);
 
-        this.duration = this.getTotalMiliseconds(this.time.all());
-
-
-        // this.seconds = new ReactiveVar('00');
-        // this.minutes = new ReactiveVar('00');
-        // this.hours = new ReactiveVar('00');
-        //
-        // console.log('Constructor::No running Pomodoro found, init timer with defaults.');
-        // this._seconds = 0;
-        // this._minutes = duration % DEFAULTS.minutes_in_hour;
-        // this._hours = Math.floor(duration / DEFAULTS.minutes_in_hour);
-        //
-        // this.updateTime();
+        this.duration = Timer.getTotalMiliseconds(this.time.all());
     }
 
-    getTotalMiliseconds({hours=0, minutes=0, seconds=0, miliseconds=0}={}) {
+    static getTotalMiliseconds({hours=0, minutes=0, seconds=0, miliseconds=0}={}) {
         let total_ms = 0;
 
         miliseconds && (total_ms += miliseconds);
@@ -61,16 +49,6 @@ Timer = class Timer {
         );
         this.time.set('seconds', Math.floor(ms / DEFAULTS.ms_in_second % DEFAULTS.seconds_in_minute));
         this.time.set('miliseconds', Math.floor(ms % DEFAULTS.ms_in_second));
-        // this._hours = Math.floor(seconds / DEFAULTS.seconds_in_hour);
-        // this._minutes = Math.floor((seconds - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
-        // this._seconds = seconds % DEFAULTS.seconds_in_minute;
-    }
-
-    secondsToTimer(seconds) {
-        this._hours = Math.floor(seconds / DEFAULTS.seconds_in_hour);
-        this._minutes = Math.floor((seconds - this._hours * DEFAULTS.seconds_in_hour) / DEFAULTS.seconds_in_minute);
-        this._seconds = seconds % DEFAULTS.seconds_in_minute;
-        this.updateTime();
     }
 
     restore() {

@@ -36,7 +36,7 @@ Tinytest.add('leshik:timer - Correctly parse input on timer creation', (test) =>
 });
 
 Tinytest.add('leshik:timer - getTotalMiliseconds return expected number of ms', (test) => {
-    let ms = Timer.prototype.getTotalMiliseconds({
+    let ms = Timer.getTotalMiliseconds({
         hours: 2,
         minutes: 34,
         seconds: 15,
