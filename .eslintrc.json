@@ -3,5 +3,8 @@
     "env": {
         "meteor": true,
         "browser": true
+    },
+    "ecmaFeatures": {
+        "modules": true
     }
 }
