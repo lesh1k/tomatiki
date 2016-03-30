@@ -64,32 +64,42 @@ Timer = class Timer {
     }
 
     start() {
-        if (!this.pomodoro) {
-            console.log('Start new Pomodoro');
-            this.setupNew();
-        } else {
-            console.log('Continue countdown for restored Pomodoro', this.pomodoro);
+        if(this.running) {
+            throw new Error('Called Timer.start() on an already running instance');
         }
 
-        this.interval_id = window.setInterval(this.countdown.bind(this),
-                                            DEFAULTS.ms_in_second);
-
-        $('.timer__trigger').text('Stop');
-        this.state = this.pomodoro.state;
+        this.running = true;
+        // if (!this.pomodoro) {
+        //     console.log('Start new Pomodoro');
+        //     this.setupNew();
+        // } else {
+        //     console.log('Continue countdown for restored Pomodoro', this.pomodoro);
+        // }
+        //
+        // this.interval_id = window.setInterval(this.countdown.bind(this),
+        //                                     DEFAULTS.ms_in_second);
+        //
+        // $('.timer__trigger').text('Stop');
+        // this.state = this.pomodoro.state;
     }
 
     stop(reason) {
-        console.log('Stopping pomodoro. Reason: ', reason);
-        if (!reason) {
-            throw new Error('Timer.stop called without a reason specified.');
+        if(!this.running) {
+            throw new Error('Called Timer.stop() on a stopped instance');
         }
-        window.clearInterval(this.interval_id);
-        this.secondsToTimer(this.duration);
-        $('.timer__trigger').text('Start');
 
-        Pomodori.update(this.pomodoro._id, {$set: {state: reason}});
-        this.state = reason;
-        delete this.pomodoro;
+        this.running = false;
+        // console.log('Stopping pomodoro. Reason: ', reason);
+        // if (!reason) {
+        //     throw new Error('Timer.stop called without a reason specified.');
+        // }
+        // window.clearInterval(this.interval_id);
+        // this.secondsToTimer(this.duration);
+        // $('.timer__trigger').text('Start');
+        //
+        // Pomodori.update(this.pomodoro._id, {$set: {state: reason}});
+        // this.state = reason;
+        // delete this.pomodoro;
     }
 
     static computeEndDate(delta_ms, now=new Date()) {

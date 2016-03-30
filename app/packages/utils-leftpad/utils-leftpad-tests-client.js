@@ -1,4 +1,3 @@
-// Write your tests here!
 function errorType(expected_error=Error) {
     return function(error) {
         return error.name === expected_error.name;

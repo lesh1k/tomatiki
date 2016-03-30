@@ -1,4 +1,9 @@
-// Write your tests here!
+function errorType(expected_error=Error) {
+    return function(error) {
+        return error.name === expected_error.name;
+    }
+}
+
 Tinytest.add('leshik:timer - Creates a Timer instance', (test) => {
     let timer = new Timer();
     test.instanceOf(timer, Timer);
@@ -94,10 +99,20 @@ Tinytest.add('leshik:timer - computeEndDate (test #2) computes Date using delta_
     test.equal(actual, expected);
 });
 
+Tinytest.add('leshik:timer - Timer.start() throws an error if called on a running instance.', (test) => {
+    let timer = new Timer({running: true});
+    test.throws(Timer.prototype.start.bind(timer), errorType(Error));
+});
+
 Tinytest.add('leshik:timer - Timer.start() changes Timer.running to "true"', (test) => {
     let timer = new Timer({hours: 1, minutes: 0, seconds: 0, running: false});
     timer.start();
     test.isTrue(timer.running);
+});
+
+Tinytest.add('leshik:timer - Timer.stop() throws an error if called on a stopped instance.', (test) => {
+    let timer = new Timer({running: false});
+    test.throws(Timer.prototype.stop.bind(timer), errorType(Error));
 });
 
 Tinytest.add('leshik:timer - Timer.stop() changes Timer.running to "false"', (test) => {
@@ -106,14 +121,18 @@ Tinytest.add('leshik:timer - Timer.stop() changes Timer.running to "false"', (te
     test.isFalse(timer.running);
 });
 
-Tinytest.add('leshik:timer - Timer.start() does countdown', (test) => {
+function onComplete() {
+    timer.stop();
+    test.equal(this.timer.state, 'stopped');
+    test.equal(timer.time.get('hours'), 0);
+    test.equal(timer.time.get('minutes'), 59);
+    test.equal(timer.get('seconds'), 59);
+}
+
+Tinytest.addAsync('leshik:timer - Timer.start() does countdown', (test, onComplete) => {
     let timer = new Timer({hours: 1, minutes: 0, seconds: 0});
     timer.start();
-    window.setTimeout(function() {
-        timer.stop();
-        test.equal(this.timer.state, 'stopped');
-        test.equal(timer.time.get('hours'), 0);
-        test.equal(timer.time.get('minutes'), 59);
-        test.equal(timer.get('seconds'), 55);
-    }, 5000);
+    Meteor.setTimeout(function() {
+        onComplete();
+    }, 1000);
 });
