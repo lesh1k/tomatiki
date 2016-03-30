@@ -14,7 +14,7 @@ const DEFAULTS = {
 }
 
 
-Timer = class Timer {
+export class Timer {
 
     constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000, running=false}={}) {
         this.running = running;
