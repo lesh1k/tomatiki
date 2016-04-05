@@ -65,12 +65,13 @@ export class Timer {
     }
 
     start() {
-        if(this.running) {
+        let ms_left = Timer.getTotalMiliseconds(this.time.all());
+        if(!this.running && ms_left > 0) {
+            this.interval_id = Meteor.setInterval(this.countdown.bind(this), this.interval_ms);
+            this.running = true;
+        } else if (this.running) {
             throw new Error('Called Timer.start() on an already running instance');
         }
-
-        this.interval_id = Meteor.setInterval(this.countdown.bind(this), this.interval_ms);
-        this.running = true;
     }
 
     stop() {

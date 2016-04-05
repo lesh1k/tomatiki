@@ -140,9 +140,10 @@ describe('Timer', () => {
             }, 1000);
         });
 
-        it('Throws an error when called on an instance with no time left (i.e. 00:00:00)', () => {
+        it('Does not change state to running if called when no time left (i.e. 00:00:00)', () => {
             let timer = new Timer({hours: 0, minutes: 0, seconds: 0});
-            chai.assert.throws(timer.start(), Error);
+            timer.start();
+            chai.assert.isFalse(timer.running);
         });
     });
 
