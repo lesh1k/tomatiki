@@ -139,6 +139,11 @@ describe('Timer', () => {
                 done();
             }, 1000);
         });
+
+        it('Throws an error when called on an instance with no time left (i.e. 00:00:00)', () => {
+            let timer = new Timer({hours: 0, minutes: 0, seconds: 0});
+            chai.assert.throws(timer.start(), Error);
+        });
     });
 
     describe('Timer.stop', () => {
@@ -150,6 +155,22 @@ describe('Timer', () => {
         it('Throws an error if called on a stopped instance.', () => {
             let timer = new Timer({running: false});
             chai.assert.throws(Timer.prototype.stop.bind(timer), Error);
+        });
+    });
+
+    describe('Timer.countdown', () => {
+        it('Stops when reaching 00:00:00', function(done) {
+            this.timeout(3000);
+
+            let timer = new Timer({hours: 0, minutes: 0, seconds: 1});
+            timer.start();
+            setTimeout(() => {
+                catchAsync(done, () => { chai.assert.isFalse(timer.running); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 0); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 0); });
+                done();
+            }, 2000);
         });
     });
 });
