@@ -18,6 +18,7 @@ export class Timer {
 
     constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000, running=false}={}) {
         this.running = running;
+        this.interval_ms = interval_ms;
 
         this.time = new ReactiveDict();
         this.time.set('hours', hours);
@@ -68,38 +69,17 @@ export class Timer {
             throw new Error('Called Timer.start() on an already running instance');
         }
 
+        this.interval_id = Meteor.setInterval(this.countdown.bind(this), this.interval_ms);
         this.running = true;
-        // if (!this.pomodoro) {
-        //     console.log('Start new Pomodoro');
-        //     this.setupNew();
-        // } else {
-        //     console.log('Continue countdown for restored Pomodoro', this.pomodoro);
-        // }
-        //
-        // this.interval_id = window.setInterval(this.countdown.bind(this),
-        //                                     DEFAULTS.ms_in_second);
-        //
-        // $('.timer__trigger').text('Stop');
-        // this.state = this.pomodoro.state;
     }
 
-    stop(reason) {
+    stop() {
         if(!this.running) {
             throw new Error('Called Timer.stop() on a stopped instance');
         }
 
         this.running = false;
-        // console.log('Stopping pomodoro. Reason: ', reason);
-        // if (!reason) {
-        //     throw new Error('Timer.stop called without a reason specified.');
-        // }
-        // window.clearInterval(this.interval_id);
-        // this.secondsToTimer(this.duration);
-        // $('.timer__trigger').text('Start');
-        //
-        // Pomodori.update(this.pomodoro._id, {$set: {state: reason}});
-        // this.state = reason;
-        // delete this.pomodoro;
+        Meteor.clearInterval(this.interval_id);
     }
 
     static computeEndDate(delta_ms, now=new Date()) {
@@ -107,19 +87,24 @@ export class Timer {
     }
 
     countdown() {
-        if (!this._seconds && !this._minutes && !this._hours) {
-            this.stop(DEFAULTS.state.completed);
-        } else if (this._seconds > 0) {
-            this._seconds -= 1;
-        } else if (this._seconds === 0 && this._minutes > 0) {
-            this._minutes -= 1;
-            this._seconds = 59;
-        } else if (this._minutes === 0 && this._hours > 0) {
-            this._hours -= 1;
-            this._minutes = 59;
-            this._seconds = 59;
+        let time = this.time.all();
+
+        if (!time.seconds && !time.minutes && !time.hours) {
+            this.stop();
+            return;
+        } else if (time.seconds > 0) {
+            time.seconds -= 1;
+        } else if (time.seconds === 0 && time.minutes > 0) {
+            time.minutes -= 1;
+            time.seconds = 59;
+        } else if (time.minutes === 0 && time.hours > 0) {
+            time.hours -= 1;
+            time.minutes = 59;
+            time.seconds = 59;
         }
 
-        this.updateTime();
+        this.time.set('seconds', time.seconds);
+        this.time.set('minutes', time.minutes);
+        this.time.set('hours', time.hours);
     }
 };

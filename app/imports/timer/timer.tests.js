@@ -135,7 +135,7 @@ describe('Timer', () => {
                 catchAsync(done, () => { chai.assert.isFalse(timer.running); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 59); });
-                catchAsync(done, () => { chai.assert.strictEqual(timer.get('seconds'), 59); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 59); });
                 done();
             }, 1000);
         });
