@@ -67,7 +67,7 @@ export class Timer {
     start() {
         let ms_left = Timer.getTotalMiliseconds(this.time.all());
         if(!this.running && ms_left > 0) {
-            this.interval_id = Meteor.setInterval(this.countdown.bind(this), this.interval_ms);
+            this.interval_id = setInterval(this.countdown.bind(this), this.interval_ms);
             this.running = true;
         } else if (this.running) {
             throw new Error('Called Timer.start() on an already running instance');
@@ -80,7 +80,7 @@ export class Timer {
         }
 
         this.running = false;
-        Meteor.clearInterval(this.interval_id);
+        clearInterval(this.interval_id);
     }
 
     static computeEndDate(delta_ms, now=new Date()) {
