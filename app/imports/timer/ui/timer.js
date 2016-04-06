@@ -1,5 +1,5 @@
 import { Template } from 'meteor/templating';
-import { Timer } from '../../timer/Timer.js';
+import { Timer } from '../Timer.js';
 
 import './timer.html';
 
