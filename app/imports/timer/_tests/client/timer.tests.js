@@ -5,8 +5,9 @@ import { catchAsync } from '../../../helpers/test-helpers.js';
 import { Timer } from '../../Timer.js';
 
 
-
 describe('Timer', () => {
+
+    const TIMER_EPSILON = 9;
 
     describe('Timer.constructor', () => {
         it('Creates a Timer instance when new Timer() is called', () => {
@@ -15,15 +16,17 @@ describe('Timer', () => {
         });
 
         it('Creates a Timer instance when new Timer() is called with arguments', () => {
-            let timer = new Timer();
-
-            timer = new Timer({
+            let timer = new Timer({
                 hours: 100,
                 seconds: 12,
                 interval_ms: 1000
             });
             chai.assert.instanceOf(timer, Timer);
         });
+
+        it('Throws an error when interval is set to less than 10ms', () => {
+            chai.assert.throws(() => {new Timer({interval_ms: 9})}, Error);
+        })
 
         it('Sets up correct default time and running_state values for a new instance', () => {
             let timer = new Timer();
@@ -83,6 +86,7 @@ describe('Timer', () => {
             chai.assert.strictEqual(mock.time.get('minutes'), 25);
             chai.assert.strictEqual(mock.time.get('seconds'), 14);
             chai.assert.strictEqual(mock.time.get('miliseconds'), 555);
+            chai.assert.strictEqual(mock.time.get('ms_left'), ms);
         });
     });
 
@@ -127,8 +131,8 @@ describe('Timer', () => {
             chai.assert.throws(Timer.prototype.start.bind(timer), Error);
         });
 
-        it('Does countdown', (done) => {
-            let timer = new Timer({hours: 1, minutes: 0, seconds: 0});
+        it('Starts countdown', (done) => {
+            let timer = new Timer({hours: 1, minutes: 0, seconds: 0, interval_ms: 10});
             timer.start();
             setTimeout(() => {
                 timer.stop();
@@ -136,8 +140,9 @@ describe('Timer', () => {
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 59); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 59); });
+                catchAsync(done, () => { chai.expect(timer.time.get('miliseconds')).to.be.closeTo(990, TIMER_EPSILON); });
                 done();
-            }, 1000);
+            }, 10 + TIMER_EPSILON);
         });
 
         it('Does not change state to running if called when no time left (i.e. 00:00:00)', () => {
@@ -160,18 +165,78 @@ describe('Timer', () => {
     });
 
     describe('Timer.countdown', () => {
-        it('Stops when reaching 00:00:00', function(done) {
-            this.timeout(3000);
-
-            let timer = new Timer({hours: 0, minutes: 0, seconds: 1});
+        it('Works for interval_ms different from 1000ms', (done) => {
+            let timer = new Timer({
+                                hours: 0,
+                                minutes: 0,
+                                seconds: 0,
+                                miliseconds: 15,
+                                interval_ms: 10
+                            });
             timer.start();
             setTimeout(() => {
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0, 'hours'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 0, 'minutes'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 0, 'seconds'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('miliseconds'), 0, 'miliseconds'); });
                 catchAsync(done, () => { chai.assert.isFalse(timer.running); });
+                catchAsync(done, () => { chai.assert.isTrue(timer.is_done); });
+                done();
+            }, 20);
+        });
+
+        it('Stops when reaching 00:00:00:000 and sets the "complete" flag to true', function(done) {
+            let timer = new Timer({
+                                hours: 0,
+                                minutes: 0,
+                                seconds: 0,
+                                miliseconds: 10,
+                                interval_ms: 10
+                            });
+            timer.start();
+            setTimeout(() => {
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0, 'hours'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 0, 'minutes'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 0, 'seconds'); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('miliseconds'), 0, 'miliseconds'); });
+                catchAsync(done, () => { chai.assert.isFalse(timer.running); });
+                catchAsync(done, () => { chai.assert.isTrue(timer.is_done); });
+                done();
+            }, 10);
+        });
+
+        it('It uses ms_left instead of interval_ms in case ms_left<interval_ms', (done) => {
+            let timer = new Timer({
+                            hours: 0,
+                            minutes: 0,
+                            seconds: 0,
+                            miliseconds: 5,
+                            interval_ms: 100
+                        });
+            timer.start();
+            setTimeout(() => {
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('hours'), 0); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('minutes'), 0); });
                 catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('seconds'), 0); });
+                catchAsync(done, () => { chai.assert.strictEqual(timer.time.get('miliseconds'), 0); });
+                catchAsync(done, () => { chai.assert.isFalse(timer.running); });
+                catchAsync(done, () => { chai.assert.isTrue(timer.is_done); });
                 done();
-            }, 2000);
+            }, 10);
+        });
+    });
+
+    describe('Timer.complete', () => {
+        let timer = new Timer();
+        timer.start();
+        timer.complete();
+
+        it('Sets the "is_done" flag to true', () => {
+            chai.assert.isTrue(timer.is_done);
+        });
+
+        it('Sets the "running" flag to false', () => {
+            chai.assert.isFalse(timer.running);
         });
     });
 });

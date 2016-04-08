@@ -17,8 +17,14 @@ const DEFAULTS = {
 export class Timer {
 
     constructor({hours=0, minutes=25, seconds=0, miliseconds=0, interval_ms=1000, running=false}={}) {
-        this.running = running;
+        if (interval_ms < 10) {
+            throw Error('Interval should be greater or equal to 10ms');
+        }
+
+        this.is_done = false;
         this.interval_ms = interval_ms;
+        this.running = running;
+        this.error_ms = 0;
 
         this.time = new ReactiveDict();
         this.time.set('hours', hours);
@@ -27,20 +33,11 @@ export class Timer {
         this.time.set('miliseconds', miliseconds);
 
         this.duration = Timer.getTotalMiliseconds(this.time.all());
-    }
-
-    static getTotalMiliseconds({hours=0, minutes=0, seconds=0, miliseconds=0}={}) {
-        let total_ms = 0;
-
-        miliseconds && (total_ms += miliseconds);
-        seconds && (total_ms += seconds * DEFAULTS.ms_in_second);
-        minutes && (total_ms += minutes * DEFAULTS.seconds_in_minute * DEFAULTS.ms_in_second);
-        hours && (total_ms += hours * DEFAULTS.seconds_in_hour * DEFAULTS.ms_in_second);
-
-        return total_ms;
+        this.time.set('ms_left', this.duration);
     }
 
     milisecondsToTime(ms=this.duration) {
+        this.time.set('ms_left', ms);
         this.time.set('hours', Math.floor(ms / DEFAULTS.ms_in_second / DEFAULTS.seconds_in_hour));
         this.time.set(
             'minutes',
@@ -65,9 +62,10 @@ export class Timer {
     }
 
     start() {
-        let ms_left = Timer.getTotalMiliseconds(this.time.all());
-        if(!this.running && ms_left > 0) {
-            this.interval_id = setInterval(this.countdown.bind(this), this.interval_ms);
+        if(!this.running && this.time.get('ms_left') > 0) {
+            this.started = new Date().getTime();
+            let interval = Math.min(this.time.get('ms_left'), this.interval_ms);
+            this.timeout_id = setTimeout(this.countdown.bind(this), interval);
             this.running = true;
         } else if (this.running) {
             throw new Error('Called Timer.start() on an already running instance');
@@ -79,33 +77,51 @@ export class Timer {
             throw new Error('Called Timer.stop() on a stopped instance');
         }
 
+        clearTimeout(this.timeout_id);
         this.running = false;
-        clearInterval(this.interval_id);
+    }
+
+    countdown() {
+        let now = new Date().getTime(),
+            ellapsed = now - this.started,
+            ms_left = this.duration - ellapsed;
+
+        if (ms_left <= 0) {
+            this.milisecondsToTime(0);
+            this.complete();
+        } else {
+            let expected_interval_ms = this.interval_ms - this.error_ms,
+                actual_interval_ms = this.time.get('ms_left') - ms_left;
+            this.error_ms =  actual_interval_ms - expected_interval_ms;
+            console.log(actual_interval_ms);
+
+            let interval = this.interval_ms - this.error_ms;
+            if (ms_left < interval) {
+                interval = ms_left;
+            }
+
+            this.timeout_id = setTimeout(this.countdown.bind(this), interval);
+            this.milisecondsToTime(ms_left);
+        }
+    }
+
+    complete() {
+        this.stop();
+        this.is_done = true;
     }
 
     static computeEndDate(delta_ms, now=new Date()) {
         return new Date(now.getTime() + delta_ms);
     }
 
-    countdown() {
-        let time = this.time.all();
+    static getTotalMiliseconds({hours=0, minutes=0, seconds=0, miliseconds=0}={}) {
+        let total_ms = 0;
 
-        if (!time.seconds && !time.minutes && !time.hours) {
-            this.stop();
-            return;
-        } else if (time.seconds > 0) {
-            time.seconds -= 1;
-        } else if (time.seconds === 0 && time.minutes > 0) {
-            time.minutes -= 1;
-            time.seconds = 59;
-        } else if (time.minutes === 0 && time.hours > 0) {
-            time.hours -= 1;
-            time.minutes = 59;
-            time.seconds = 59;
-        }
+        miliseconds && (total_ms += miliseconds);
+        seconds && (total_ms += seconds * DEFAULTS.ms_in_second);
+        minutes && (total_ms += minutes * DEFAULTS.seconds_in_minute * DEFAULTS.ms_in_second);
+        hours && (total_ms += hours * DEFAULTS.seconds_in_hour * DEFAULTS.ms_in_second);
 
-        this.time.set('seconds', time.seconds);
-        this.time.set('minutes', time.minutes);
-        this.time.set('hours', time.hours);
+        return total_ms;
     }
 };
