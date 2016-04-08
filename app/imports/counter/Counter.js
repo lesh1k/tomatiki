@@ -1,4 +1,4 @@
-export class PomodoroCounter {
+export class Counter {
 
     constructor({count=0}={}) {
         this.count = count;

@@ -2,7 +2,8 @@ import { Template } from 'meteor/templating';
 
 import './body.html';
 import '../../timer/ui/timer.js';
-import '../../timer/ui/timer.html';
+import '../../counter/ui/counter.js';
+
 
 Template.body.helpers({
     random_text: [
