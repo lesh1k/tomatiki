@@ -49,18 +49,6 @@ export class Timer {
         this.time.set('miliseconds', Math.floor(ms % DEFAULTS.ms_in_second));
     }
 
-    setupNew() {
-        let now = new Date(),
-            pomodoro_id = Pomodori.insert({
-                state: DEFAULTS.state.running,
-                created: now,
-                end: this.computeEndDate(now)
-            });
-
-        this.pomodoro = Pomodori.findOne(pomodoro_id);
-        console.log('Inserted Pomodoro: ', this.pomodoro, `. Duration: ${this.duration}`);
-    }
-
     start() {
         if(!this.running && this.time.get('ms_left') > 0) {
             this.started = new Date().getTime();
@@ -93,7 +81,6 @@ export class Timer {
             let expected_interval_ms = this.interval_ms - this.error_ms,
                 actual_interval_ms = this.time.get('ms_left') - ms_left;
             this.error_ms =  actual_interval_ms - expected_interval_ms;
-            console.log(actual_interval_ms);
 
             let interval = this.interval_ms - this.error_ms;
             if (ms_left < interval) {
