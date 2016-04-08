@@ -10,6 +10,6 @@ Template.counter.onCreated(function() {
 Template.counter.helpers({
     count: function() {
         let tmpl = Template.instance();
-        return tmpl.counter.count;
+        return tmpl.counter.count.get();
     }
 });
