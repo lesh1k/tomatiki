@@ -5,7 +5,7 @@ import './timer.html';
 
 
 Template.timer.onCreated(function() {
-    this.timer = new Timer();
+    this.timer = new Timer({ interval_ms: 1002 });
     this.timer.start();
 })
 
@@ -24,6 +24,11 @@ Template.timer.helpers({
         let tmpl = Template.instance(),
             timer = tmpl.timer;
         return leftPad(timer.time.get('seconds'));
+    },
+    miliseconds: function() {
+        let tmpl = Template.instance(),
+            timer = tmpl.timer;
+        return leftPad(timer.time.get('miliseconds'), 3);
     },
     timer_separator: ':'
 });
