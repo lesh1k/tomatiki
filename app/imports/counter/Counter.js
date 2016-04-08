@@ -1,14 +1,14 @@
 export class Counter {
 
     constructor({count=0}={}) {
-        this.count = count;
+        this.count = new ReactiveVar(count);
     }
 
     increment({ amount=1 }={}) {
-        this.count += amount;
+        this.count.set(this.count.get() + amount);
     }
 
     decrement({ amount=1 }={}) {
-        this.count -= amount;
+        this.count.set(this.count.get() - amount);
     }
 }

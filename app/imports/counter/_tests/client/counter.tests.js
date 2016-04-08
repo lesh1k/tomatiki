@@ -16,12 +16,12 @@ describe('Counter', () => {
 
         it('Sets Counter.count to 0, by default', () => {
             let counter = new Counter();
-            chai.assert.strictEqual(counter.count, 0);
+            chai.assert.strictEqual(counter.count.get(), 0);
         });
 
         it('Sets Counter.count to the supplied value', () => {
             let counter = new Counter({ count: 5 });
-            chai.assert.strictEqual(counter.count, 5);
+            chai.assert.strictEqual(counter.count.get(), 5);
         });
 
     });
@@ -31,13 +31,13 @@ describe('Counter', () => {
         it('Increments Counter.count by 1 by default', () => {
             let counter = new Counter();
             counter.increment();
-            chai.assert.strictEqual(counter.count, 1);
+            chai.assert.strictEqual(counter.count.get(), 1);
         });
 
         it('Increments Counter.count with the supplied value', () => {
             let counter = new Counter();
             counter.increment({ amount: 7 });
-            chai.assert.strictEqual(counter.count, 7);
+            chai.assert.strictEqual(counter.count.get(), 7);
         });
     });
 
@@ -46,13 +46,13 @@ describe('Counter', () => {
         it('Decrements Counter.count by 1 by default', () => {
             let counter = new Counter({ count: 5 });
             counter.decrement();
-            chai.assert.strictEqual(counter.count, 4);
+            chai.assert.strictEqual(counter.count.get(), 4);
         });
 
         it('Decrements Counter.count with the supplied value', () => {
             let counter = new Counter({ count: 5 });
             counter.decrement({ amount: 5 });
-            chai.assert.strictEqual(counter.count, 0);
+            chai.assert.strictEqual(counter.count.get(), 0);
         });
 
     });
