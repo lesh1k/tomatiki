@@ -1,11 +1,17 @@
 <template name="pomodoroTimer">
     <div class="timer">
-        <div class="hours">{{hours}}</div>
-        <div class="timer__separator">{{timer_separator}}</div>
-        <div class="minutes">{{minutes}}</div>
-        <div class="timer_separator">{{timer_separator}}</div>
-        <div class="seconds">{{seconds}}</div>
-        <div class="timer_separator">{{timer_separator}}</div>
-        <div class="seconds">{{miliseconds}}</div>
+        <div class="timer__time">
+            <div class="hours">{{hours}}</div>
+            <div class="separator">{{timer_separator}}</div>
+            <div class="minutes">{{minutes}}</div>
+            <div class="separator">{{timer_separator}}</div>
+            <div class="seconds">{{seconds}}</div>
+            <div class="separator">{{timer_separator}}</div>
+            <div class="seconds">{{miliseconds}}</div>
+        </div>
+        <div class="timer__controls">
+            <button type="button" class="start" name="button">Start</button>
+            <button type="button" class="stop" name="button">Stop</button>
+        </div>
     </div>
 </template>

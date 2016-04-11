@@ -1,13 +1,12 @@
-/* CSS declarations go here */
 .timer {
     font-size: 21px;
     line-height: 21px;
 }
 
-.timer > div {
+.timer__time > div {
     display: inline-block;
 }
 
-.timer__separator {
+.separator {
     margin: 10px 0;
 }
