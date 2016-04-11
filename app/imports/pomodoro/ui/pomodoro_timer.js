@@ -5,7 +5,7 @@ import './pomodoro_timer.html';
 
 
 Template.pomodoroTimer.onCreated(function() {
-    this.timer = new Timer({ interval_ms: 1002 });
+    this.timer = new Timer({ interval_ms: 500 });
 })
 
 Template.pomodoroTimer.helpers({
@@ -39,6 +39,6 @@ Template.pomodoroTimer.events({
     },
     'click .stop': function(event) {
         let tmpl = Template.instance();
-        tmpl.timer.stop();
+        tmpl.timer.reset();
     }
 });
