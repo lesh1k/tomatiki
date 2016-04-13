@@ -9,7 +9,7 @@ export class Pomodoro {
             minutes: 25,
             seconds: 0,
             miliseconds: 0,
-            interval_ms: 1002 // 1002 to compensate for deviations during countdown
+            interval_ms: 500
         });
 
         this.counter = new Counter({amount: 0});

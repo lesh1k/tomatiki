@@ -319,6 +319,7 @@ describe('Timer', () => {
         it('Sets the "running" flag to false', () => {
             chai.assert.isFalse(timer.running);
         });
+
     });
 
     describe('Timer.set', () => {

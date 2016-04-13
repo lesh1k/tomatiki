@@ -10,25 +10,15 @@ Template.timer.onCreated(function() {
 })
 
 Template.timer.helpers({
-    hours: function() {
+    time: function(part, pad_width=2) {
+        // part can be either one of: hours/minutes/seconds/miliseconds
         let tmpl = Template.instance(),
             timer = tmpl.timer;
-        return leftPad(timer.time.get('hours'));
-    },
-    minutes: function() {
-        let tmpl = Template.instance(),
-            timer = tmpl.timer;
-        return leftPad(timer.time.get('minutes'));
-    },
-    seconds: function() {
-        let tmpl = Template.instance(),
-            timer = tmpl.timer;
-        return leftPad(timer.time.get('seconds'));
-    },
-    miliseconds: function() {
-        let tmpl = Template.instance(),
-            timer = tmpl.timer;
-        return leftPad(timer.time.get('miliseconds'), 3);
+
+        if (typeof pad_width !== 'number') {
+            pad_width = 2;
+        }
+        return leftPad(timer.time.get(part), pad_width);
     },
     timer_separator: ':'
 });

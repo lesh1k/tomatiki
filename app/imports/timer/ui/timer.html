@@ -1,11 +1,11 @@
 <template name="timer">
     <div class="timer">
-        <div class="hours">{{hours}}</div>
-        <div class="timer__separator">{{timer_separator}}</div>
-        <div class="minutes">{{minutes}}</div>
-        <div class="timer_separator">{{timer_separator}}</div>
-        <div class="seconds">{{seconds}}</div>
-        <div class="timer_separator">{{timer_separator}}</div>
-        <div class="seconds">{{miliseconds}}</div>
+        <div class="hours">{{time 'hours'}}</div>
+        <div class="separator">{{timer_separator}}</div>
+        <div class="minutes">{{time 'minutes'}}</div>
+        <div class="separator">{{timer_separator}}</div>
+        <div class="seconds">{{time 'seconds'}}</div>
+        <div class="separator">{{timer_separator}}</div>
+        <div class="miliseconds">{{time 'miliseconds' 3}}</div>
     </div>
 </template>
