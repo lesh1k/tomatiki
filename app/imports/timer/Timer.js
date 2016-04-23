@@ -29,15 +29,15 @@ export class Timer {
         seconds = DEFAULTS.time.seconds,
         miliseconds = DEFAULTS.time.miliseconds,
         interval_ms = DEFAULTS.interval_ms,
-        running = false
+        is_running = false
     } = {}) {
         if (interval_ms < 10) {
             throw Error('Interval should be greater or equal to 10ms');
         }
 
-        this.is_done = false;
+        this.is_done = new ReactiveVar(false);
         this.interval_ms = interval_ms;
-        this.running = running;
+        this.is_running = is_running;
         this.error_ms = 0;
         this.duration = 0;
         this.time = new ReactiveDict();
@@ -78,29 +78,31 @@ export class Timer {
     }
 
     reset() {
-        this.stop();
-        this.is_done = false;
+        if (this.is_running) {
+            this.stop();
+        }
+        this.is_done.set(false);
         this.set({miliseconds: this.duration});
     }
 
     start() {
-        if (!this.running && this.time.get('ms_left') > 0) {
+        if (!this.is_running && this.time.get('ms_left') > 0) {
             this.started = new Date().getTime();
             let interval = Math.min(this.time.get('ms_left'), this.interval_ms);
             this.timeout_id = setTimeout(this.countdown.bind(this), interval);
-            this.running = true;
-        } else if (this.running) {
+            this.is_running = true;
+        } else if (this.is_running) {
             throw new Error('Called Timer.start() on an already running instance');
         }
     }
 
     stop() {
-        if (!this.running) {
+        if (!this.is_running) {
             throw new Error('Called Timer.stop() on a stopped instance');
         }
 
         clearTimeout(this.timeout_id);
-        this.running = false;
+        this.is_running = false;
     }
 
     countdown() {
@@ -128,7 +130,7 @@ export class Timer {
 
     complete() {
         this.stop();
-        this.is_done = true;
+        this.is_done.set(true);
     }
 
     static computeEndDate(delta_ms, now = new Date()) {

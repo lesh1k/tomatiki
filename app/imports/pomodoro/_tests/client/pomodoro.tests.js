@@ -26,6 +26,27 @@ describe('Pomodoro', () => {
             chai.assert.instanceOf(pomodoro.counter, Counter);
         });
 
+        it('Sets up the Tracker to increment counter on timer.is_done', () => {
+            let pomodoro = new Pomodoro();
+            pomodoro.timer.is_done.set(true);
+            Tracker.flush();
+            chai.assert.strictEqual(pomodoro.counter.count.get(), 1);
+        })
+
+    });
+
+    describe('Pomodoro.start / Pomodoro.stop', () => {
+        let pomodoro = new Pomodoro();
+
+        it('Starts the timer', () => {
+            pomodoro.start();
+            chai.assert.isTrue(pomodoro.timer.is_running);
+        });
+
+        it('Stops the timer', () => {
+            pomodoro.stop();
+            chai.assert.isFalse(pomodoro.timer.is_running);
+        });
     });
 
 });

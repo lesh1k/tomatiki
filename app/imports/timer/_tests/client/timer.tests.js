@@ -41,7 +41,7 @@ describe('Timer', () => {
         it('Sets up correct default time and running_state values for a new instance', () => {
             let timer = new Timer();
 
-            chai.assert.isFalse(timer.running);
+            chai.assert.isFalse(timer.is_running);
             chai.assert.strictEqual(timer.time.get('hours'), 0);
             chai.assert.strictEqual(timer.time.get('minutes'), 25);
             chai.assert.strictEqual(timer.time.get('seconds'), 0);
@@ -55,7 +55,7 @@ describe('Timer', () => {
                 seconds: 13
             });
 
-            chai.assert.isFalse(timer.running);
+            chai.assert.isFalse(timer.is_running);
             chai.assert.strictEqual(timer.time.get('hours'), 1);
             chai.assert.strictEqual(timer.time.get('minutes'), 25);
             chai.assert.strictEqual(timer.time.get('seconds'), 13);
@@ -140,12 +140,12 @@ describe('Timer', () => {
                 running: false
             });
             timer.start();
-            chai.assert.isTrue(timer.running);
+            chai.assert.isTrue(timer.is_running);
         });
 
         it('Throws an error if called on a running instance.', () => {
             let timer = new Timer({
-                running: true
+                is_running: true
             });
             chai.assert.throws(Timer.prototype.start.bind(timer), Error);
         });
@@ -164,7 +164,7 @@ describe('Timer', () => {
             setTimeout(() => {
                 timer.stop();
                 catchAsync(done, () => {
-                    chai.assert.isFalse(timer.running);
+                    chai.assert.isFalse(timer.is_running);
                 });
                 catchAsync(done, () => {
                     chai.assert.strictEqual(timer.time.get('hours'), 0);
@@ -189,7 +189,7 @@ describe('Timer', () => {
                 seconds: 0
             });
             timer.start();
-            chai.assert.isFalse(timer.running);
+            chai.assert.isFalse(timer.is_running);
         });
     });
 
@@ -233,10 +233,10 @@ describe('Timer', () => {
                     chai.assert.strictEqual(timer.time.get('miliseconds'), 0, 'miliseconds');
                 });
                 catchAsync(done, () => {
-                    chai.assert.isFalse(timer.running);
+                    chai.assert.isFalse(timer.is_running);
                 });
                 catchAsync(done, () => {
-                    chai.assert.isTrue(timer.is_done);
+                    chai.assert.isTrue(timer.is_done.get());
                 });
                 done();
             }, 20);
@@ -265,10 +265,10 @@ describe('Timer', () => {
                     chai.assert.strictEqual(timer.time.get('miliseconds'), 0, 'miliseconds');
                 });
                 catchAsync(done, () => {
-                    chai.assert.isFalse(timer.running);
+                    chai.assert.isFalse(timer.is_running);
                 });
                 catchAsync(done, () => {
-                    chai.assert.isTrue(timer.is_done);
+                    chai.assert.isTrue(timer.is_done.get());
                 });
                 done();
             }, 10);
@@ -297,10 +297,10 @@ describe('Timer', () => {
                     chai.assert.strictEqual(timer.time.get('miliseconds'), 0);
                 });
                 catchAsync(done, () => {
-                    chai.assert.isFalse(timer.running);
+                    chai.assert.isFalse(timer.is_running);
                 });
                 catchAsync(done, () => {
-                    chai.assert.isTrue(timer.is_done);
+                    chai.assert.isTrue(timer.is_done.get());
                 });
                 done();
             }, 10);
@@ -313,11 +313,11 @@ describe('Timer', () => {
         timer.complete();
 
         it('Sets the "is_done" flag to true', () => {
-            chai.assert.isTrue(timer.is_done);
+            chai.assert.isTrue(timer.is_done.get());
         });
 
         it('Sets the "running" flag to false', () => {
-            chai.assert.isFalse(timer.running);
+            chai.assert.isFalse(timer.is_running);
         });
 
     });
@@ -386,13 +386,13 @@ describe('Timer', () => {
         it('Should stop the countdown', () => {
             timer.start();
             timer.reset();
-            chai.assert.isFalse(timer.running);
+            chai.assert.isFalse(timer.is_running);
         });
 
         it('Should set Timer.is_done to false', () => {
             timer.start();
             timer.reset();
-            chai.assert.isFalse(timer.is_done);
+            chai.assert.isFalse(timer.is_done.get());
         });
     });
 });
