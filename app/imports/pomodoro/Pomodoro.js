@@ -16,11 +16,8 @@ export class Pomodoro {
 
         Tracker.autorun(() => {
             if (this.timer.is_done.get() === true) {
-                console.log(this.counter.count.get());
                 this.counter.increment({ amount: 1 });
                 this.timer.reset();
-                console.log('Got here');
-                console.log(this.counter.count.get());
             }
         });
     }
