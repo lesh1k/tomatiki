@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { Timer } from '../../timer/Timer.js';
+import { leftPad } from '../../utils/leftpad/leftpad.js';
 
 import './pomodoro_timer.html';
 
