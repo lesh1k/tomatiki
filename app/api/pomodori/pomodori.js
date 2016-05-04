@@ -10,6 +10,11 @@ Schemas.Pomodoro = new SimpleSchema({
     },
     ended: {
         type: Date
+    },
+    description: {
+        type: String,
+        max: 200,
+        optional: true
     }
 });
 
