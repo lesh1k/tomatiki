@@ -4,10 +4,6 @@ import { Timer } from '../../timer/Timer.js';
 import './pomodoro_timer.html';
 
 
-Template.pomodoroTimer.onCreated(function() {
-    this.timer = new Timer({ minutes: 0, seconds: 3, interval_ms: 500 });
-})
-
 Template.pomodoroTimer.helpers({
     time: function(part, pad_width=2) {
         // part can be either one of: hours/minutes/seconds/miliseconds
