@@ -10,19 +10,17 @@ import { Counter } from '../../../counter/Counter.js';
 describe('Pomodoro', () => {
 
     describe('Pomodoro.constructor', () => {
+        let pomodoro = new Pomodoro();
 
         it('Creates a Pomodoro instance', () => {
-            let pomodoro = new Pomodoro();
             chai.assert.instanceOf(pomodoro, Pomodoro);
         });
 
         it('Creates an instance of Timer', () => {
-            let pomodoro = new Pomodoro();
             chai.assert.instanceOf(pomodoro.timer, Timer);
         });
 
         it('Creates an instance of Counter', () => {
-            let pomodoro = new Pomodoro();
             chai.assert.instanceOf(pomodoro.counter, Counter);
         });
 
@@ -75,6 +73,35 @@ describe('Pomodoro', () => {
         it('Stops the timer', () => {
             pomodoro.stop();
             chai.assert.isFalse(pomodoro.timer.is_running);
+        });
+    });
+
+    describe('Pomodoro.reset', () => {
+        it('Resets the pomodoro', () => {
+            let config = {
+                long_break_interval: 2,
+                long_break: {
+                        hours: 0,
+                        minutes: 0,
+                        seconds: 20,
+                        miliseconds: 0
+                    },
+                pomodoro: {
+                        hours: 0,
+                        minutes: 5,
+                        seconds: 5,
+                        miliseconds: 0
+                    }
+                },
+                pomodoro = new Pomodoro(config);
+
+            pomodoro.counter.count.set(1);
+            pomodoro.timer.is_done.set(true);
+            Tracker.flush();
+            pomodoro.reset();
+
+            chai.assert.strictEqual(pomodoro.timer.time.get('seconds'), 5);
+            chai.assert.strictEqual(pomodoro.timer.time.get('minutes'), 5);
         });
     });
 

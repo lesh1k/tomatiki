@@ -26,26 +26,26 @@ const DEFAULTS = {
 
 export class Pomodoro {
     constructor(settings=DEFAULTS) {
-        settings = _.extend({}, DEFAULTS, settings);
+        this.settings = _.extend({}, DEFAULTS, settings);
         this.is_break = false;
-        this.timer = new Timer(settings.pomodoro);
+        this.timer = new Timer(this.settings.pomodoro);
 
         this.counter = new Counter({amount: 0});
 
         Tracker.autorun(() => {
             if (this.timer.is_done.get()) {
                 if (this.is_break) {
-                    this.timer.set(settings.pomodoro);
+                    this.timer.set(this.settings.pomodoro);
                     this.is_break = false;
                     this.timer.reset();
                 } else {
                     this.counter.increment({ amount: 1 });
 
                     let count = this.counter.count.get();
-                    if (count > 0 && count % settings.long_break_interval === 0) {
-                        this.timer.set(settings.long_break);
+                    if (count > 0 && count % this.settings.long_break_interval === 0) {
+                        this.timer.set(this.settings.long_break);
                     } else {
-                        this.timer.set(settings.break);
+                        this.timer.set(this.settings.break);
                     }
 
                     this.is_break = true;
@@ -62,5 +62,10 @@ export class Pomodoro {
 
     stop() {
         this.timer.stop();
+    }
+
+    reset() {
+        this.timer.set(this.settings.pomodoro);
+        this.timer.reset();
     }
 }

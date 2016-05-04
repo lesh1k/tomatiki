@@ -14,3 +14,12 @@ Template.pomodoroTimer.onCreated(function() {
 Template.pomodoroCounter.onCreated(function() {
     this.counter = POMODORO.counter;
 });
+
+Template.pomodoro.events({
+    'click .start': function(event) {
+        POMODORO.start();
+    },
+    'click .stop': function(event) {
+        POMODORO.reset();
+    }
+});

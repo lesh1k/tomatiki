@@ -18,14 +18,3 @@ Template.pomodoroTimer.helpers({
     },
     timer_separator: ':'
 });
-
-Template.pomodoroTimer.events({
-    'click .start': function(event) {
-        let tmpl = Template.instance();
-        tmpl.timer.start();
-    },
-    'click .stop': function(event) {
-        let tmpl = Template.instance();
-        tmpl.timer.reset();
-    }
-});
