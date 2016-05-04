@@ -43,6 +43,25 @@ describe('Pomodoro', () => {
             Tracker.flush();
             chai.assert.strictEqual(pomodoro.counter.count.get(), 0);
         });
+
+        it('Starts a long break if count == settings.long_break_interval', () => {
+            let config = {
+                long_break_interval: 2,
+                long_break: {
+                        hours: 0,
+                        minutes: 0,
+                        seconds: 20,
+                        miliseconds: 0
+                    }
+                },
+                pomodoro = new Pomodoro(config);
+
+            pomodoro.counter.count.set(1);
+            pomodoro.timer.is_done.set(true);
+            Tracker.flush();
+            chai.assert.isTrue(pomodoro.is_break);
+            chai.assert.strictEqual(pomodoro.timer.duration, 20000); // 20,000 i.e. 20s in ms
+        });
     });
 
     describe('Pomodoro.start / Pomodoro.stop', () => {
