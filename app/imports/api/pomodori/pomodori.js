@@ -19,5 +19,5 @@ Schemas.Pomodoro = new SimpleSchema({
 });
 
 
-export const Pomodori = new Meteor.Collection('pomodori');
+Pomodori = new Meteor.Collection('pomodori');
 Pomodori.attachSchema(Schemas.Pomodoro);
