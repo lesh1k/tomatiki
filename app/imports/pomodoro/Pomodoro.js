@@ -51,11 +51,12 @@ export class Pomodoro {
 
     start(pomodoro_description='') {
         let next_break_duration = this.getBreakDuration(this.counter.count.get()+1),
-            now = new Date().getTime();
+            end = Timer.computeEndDate(this.timer.duration),
+            break_end = Timer.computeEndDate(next_break_duration, end);
 
         this.id = Pomodori.insert({
-            end: new Date(now + this.timer.duration),
-            break_end: new Date(now + this.timer.duration + next_break_duration),
+            end: end,
+            break_end: break_end,
             description: pomodoro_description
         });
 
