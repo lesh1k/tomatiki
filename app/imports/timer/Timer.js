@@ -1,3 +1,7 @@
+import { ReactiveDict } from 'meteor/reactive-dict';
+import { ReactiveVar } from 'meteor/reactive-var';
+
+
 'use strict';
 
 const DEFAULTS = {

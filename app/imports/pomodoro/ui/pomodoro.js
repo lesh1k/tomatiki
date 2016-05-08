@@ -20,6 +20,6 @@ Template.pomodoro.events({
         POMODORO.start();
     },
     'click .stop': function(event) {
-        POMODORO.reset();
+        POMODORO.stop();
     }
 });

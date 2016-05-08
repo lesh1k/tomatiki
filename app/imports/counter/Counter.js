@@ -1,3 +1,6 @@
+import { ReactiveVar } from 'meteor/reactive-var';
+
+
 export class Counter {
 
     constructor({count=0}={}) {

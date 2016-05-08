@@ -62,21 +62,21 @@ describe('Pomodoro', () => {
         });
     });
 
-    describe('Pomodoro.start / Pomodoro.stop', () => {
-        let pomodoro = new Pomodoro();
-
+    describe('Pomodoro.start', () => {
         it('Starts the timer', () => {
+            let pomodoro = new Pomodoro();
             pomodoro.start();
             chai.assert.isTrue(pomodoro.timer.is_running);
         });
+    });
 
+    describe('Pomodoro.stop', () => {
         it('Stops the timer', () => {
+            let pomodoro = new Pomodoro();
             pomodoro.stop();
             chai.assert.isFalse(pomodoro.timer.is_running);
         });
-    });
 
-    describe('Pomodoro.reset', () => {
         it('Resets the pomodoro', () => {
             let config = {
                 long_break_interval: 2,
@@ -98,7 +98,7 @@ describe('Pomodoro', () => {
             pomodoro.counter.count.set(1);
             pomodoro.timer.is_done.set(true);
             Tracker.flush();
-            pomodoro.reset();
+            pomodoro.stop();
 
             chai.assert.strictEqual(pomodoro.timer.time.get('seconds'), 5);
             chai.assert.strictEqual(pomodoro.timer.time.get('minutes'), 5);

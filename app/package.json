@@ -4,8 +4,8 @@
   "description": "Sample meteor app",
   "main": "index.js",
   "scripts": {
-    "start": "meteor --settings settings.json",
-    "production": "meteor --settings settings.json",
+    "start": "meteor",
+    "production": "meteor",
     "test": "meteor test --driver-package practicalmeteor:mocha --port 3100"
   },
   "repository": {

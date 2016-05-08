@@ -1,23 +1,33 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 
 let Schemas = {};
 
 Schemas.Pomodoro = new SimpleSchema({
-    started: {
+    end: {
         type: Date
     },
-    ended: {
+    break_end: {
         type: Date
+    },
+    is_running: {
+        type: Boolean,
+        defaultValue: true
+    },
+    is_done: {
+        type: Boolean,
+        defaultValue: false
     },
     description: {
         type: String,
         max: 200,
-        optional: true
+        optional: true,
+        // defaultValue: ''
     }
 });
 
 
-Pomodori = new Meteor.Collection('pomodori');
+export const Pomodori = new Mongo.Collection('pomodori');
 Pomodori.attachSchema(Schemas.Pomodoro);

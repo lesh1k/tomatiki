@@ -1,14 +1,9 @@
 /* eslint-env mocha */
 
-import {
-    chai
-} from 'meteor/practicalmeteor:chai';
-import {
-    catchAsync
-} from '../../../helpers/test-helpers.js';
-import {
-    Timer
-} from '../../Timer.js';
+import { chai } from 'meteor/practicalmeteor:chai';
+import { catchAsync } from '../../../helpers/test-helpers.js';
+import { Timer } from '../../Timer.js';
+import { ReactiveDict } from 'meteor/reactive-dict';
 
 
 describe('Timer', () => {
