@@ -24,4 +24,3 @@ practicalmeteor:mocha
 practicalmeteor:chai
 aldeed:simple-schema
 aldeed:collection2
-autopublish
