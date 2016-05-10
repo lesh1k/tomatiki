@@ -1,27 +1,48 @@
 {
-  "name": "tomatiki",
-  "version": "0.0.1",
-  "description": "Sample meteor app",
-  "main": "index.js",
-  "scripts": {
-    "start": "meteor",
-    "production": "meteor",
-    "test": "meteor test --driver-package practicalmeteor:mocha --port 3100"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lesh1k/tomatiki.git"
-  },
-  "author": "Alexei Dvorac",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lesh1k/tomatiki/issues"
-  },
-  "homepage": "https://github.com/lesh1k/tomatiki#readme",
-  "dependencies": {
-    "browser": "^0.2.6",
-    "growl": "^1.9.2",
-    "jade": "^1.11.0",
-    "mocha": "^2.4.5"
-  }
+    "name": "tomatiki",
+    "version": "0.0.1",
+    "description": "Sample meteor app",
+    "main": "index.js",
+    "scripts": {
+        "start": "meteor",
+        "production": "meteor",
+        "test": "meteor test --driver-package practicalmeteor:mocha --port 3100"
+    },
+    "eslintConfig": {
+        "extends": "eslint:recommended",
+        "env": {
+            "meteor": true,
+            "browser": true,
+            "es6": true
+        },
+        "parserOptions": {
+            "ecmaFeatures": {
+                "modules": true,
+                "impliedStrict": true
+            },
+            "sourceType": "module"
+        },
+        "rules": {
+            "indent": [2, 4],
+            "quotes": [1, "single"],
+            "linebreak-style": [2, "unix"],
+            "semi": [2, "always"]
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lesh1k/tomatiki.git"
+    },
+    "author": "Alexei Dvorac",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/lesh1k/tomatiki/issues"
+    },
+    "homepage": "https://github.com/lesh1k/tomatiki#readme",
+    "dependencies": {
+        "browser": "^0.2.6",
+        "growl": "^1.9.2",
+        "jade": "^1.11.0",
+        "mocha": "^2.4.5"
+    }
 }
