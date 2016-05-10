@@ -17,7 +17,6 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 tinytest
 reactive-var
-insecure
 reactive-dict
 standard-minifier-css
 standard-minifier-js
