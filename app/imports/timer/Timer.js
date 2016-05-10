@@ -21,7 +21,7 @@ const DEFAULTS = {
         seconds: 0,
         miliseconds: 0
     },
-    interval_ms: 500
+    interval_ms: 1000
 }
 
 
