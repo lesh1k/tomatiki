@@ -54,18 +54,18 @@ export class Pomodoro {
             end = Timer.computeEndDate(this.timer.duration),
             break_end = Timer.computeEndDate(next_break_duration, end);
 
-        this.id = Pomodori.insert({
+        this.id = Meteor.call('pomodori.insert', {
             end: end,
             break_end: break_end,
             description: pomodoro_description
+        }, (error, result) => {
+            if (result) {
+                this.id = result;
+                this.timer.start();
+            } else {
+                throw new Meteor.Error(error);
+            }
         });
-
-        if (this.id) {
-            this.timer.start();
-        } else {
-            throw new Meteor.Error('Pomodori.insert failed!');
-        }
-
     }
 
     stop() {
@@ -83,10 +83,7 @@ export class Pomodoro {
     }
 
     finishPomodoro() {
-        this.updatePomodoro({
-            is_done: true,
-            is_running: true
-        });
+        Meteor.call('pomodori.markDone', this.id);
         this.counter.increment({ amount: 1 });
         this.startBreak();
     }
@@ -111,8 +108,9 @@ export class Pomodoro {
         this.timer.set(this.settings.pomodoro);
         this.is_break = false;
         this.timer.reset();
-        this.updatePomodoro({
-            is_running: false
+        Meteor.call('pomodori.markNotRunning', this.id, (error) => {
+            if (error) throw new Meteor.Error(error);
+            this.id = void 0;
         });
     }
 }
