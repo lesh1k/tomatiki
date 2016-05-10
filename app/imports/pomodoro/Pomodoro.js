@@ -23,7 +23,7 @@ const DEFAULTS = {
         miliseconds: 0,
     },
     long_break_interval: 4
-}
+};
 
 export class Pomodoro {
     constructor(settings=DEFAULTS) {
