@@ -113,4 +113,8 @@ export class Pomodoro {
             this.id = void 0;
         });
     }
+
+    static fetchRunning() {
+        // Pomodori
+    }
 }
