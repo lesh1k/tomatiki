@@ -29,11 +29,6 @@ export class Pomodoro {
     constructor(settings=DEFAULTS) {
         this.settings = _.extend({}, DEFAULTS, settings);
         this.is_break = false;
-        // this.meta = {
-        //     end: void 0,
-        //     break_end: void 0,
-        //     description: ''
-        // };
 
         this.timer = new Timer(this.settings.pomodoro);
         this.counter = new Counter({amount: 0});
@@ -57,7 +52,8 @@ export class Pomodoro {
         this.id = Meteor.call('pomodori.insert', {
             end: end,
             break_end: break_end,
-            description: pomodoro_description
+            description: pomodoro_description,
+            state: 1 // Running
         }, (error, result) => {
             if (result) {
                 this.id = result;
@@ -71,19 +67,11 @@ export class Pomodoro {
     stop() {
         this.timer.set(this.settings.pomodoro);
         this.timer.reset();
-        this.updatePomodoro({
-            is_running: false
-        });
-    }
-
-    updatePomodoro(data = {}) {
-        Pomodori.update(this.id, {
-            $set: data
-        });
+        Meteor.call('pomodori.markReset', this.id);
     }
 
     finishPomodoro() {
-        Meteor.call('pomodori.markDone', this.id);
+        Meteor.call('pomodori.markBreak', this.id);
         this.counter.increment({ amount: 1 });
         this.startBreak();
     }
@@ -108,8 +96,10 @@ export class Pomodoro {
         this.timer.set(this.settings.pomodoro);
         this.is_break = false;
         this.timer.reset();
-        Meteor.call('pomodori.markNotRunning', this.id, (error) => {
-            if (error) throw new Meteor.Error(error);
+        Meteor.call('pomodori.markDone', this.id, (error) => {
+            if (error) {
+                throw new Meteor.Error(error);
+            }
             this.id = void 0;
         });
     }

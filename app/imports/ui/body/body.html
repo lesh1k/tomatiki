@@ -7,8 +7,7 @@
             <tr>
                 <td>Ends</td>
                 <td>Break ends</td>
-                <td>Running</td>
-                <td>Done</td>
+                <td>State</td>
                 <td>Description</td>
             </tr>
         </thead>
@@ -17,8 +16,7 @@
                 <tr>
                     <td>{{ end }}</td>
                     <td>{{ break_end }}</td>
-                    <td>{{ toString is_running }}</td>
-                    <td>{{ toString is_done }}</td>
+                    <td>{{ state }}</td>
                     <td>{{ description }}</td>
                 </tr>
             {{/each}}

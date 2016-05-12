@@ -3,26 +3,32 @@ import { Pomodori } from './pomodori.js';
 
 
 Meteor.methods({
-    'pomodori.insert'({end, break_end, description, is_running, is_done}) {
+    'pomodori.insert'({end, break_end, description, state}) {
         return Pomodori.insert({
             end: end,
             break_end: break_end,
             description: description,
-            is_running: is_running,
-            is_done: is_done,
+            state: state,
+        });
+    },
+    'pomodori.markBreak'(id) {
+        return Pomodori.update(id, {
+            $set: {
+                state: 2
+            }
         });
     },
     'pomodori.markDone'(id) {
         return Pomodori.update(id, {
             $set: {
-                is_done: true
+                state: 3
             }
         });
     },
-    'pomodori.markNotRunning'(id) {
+    'pomodori.markReset'(id) {
         return Pomodori.update(id, {
             $set: {
-                is_running: false
+                state: -1
             }
         });
     }

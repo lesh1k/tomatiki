@@ -7,23 +7,25 @@ let Schemas = {};
 
 Schemas.Pomodoro = new SimpleSchema({
     end: {
-        type: Date
+        type: Date,
+        label: 'Pomodoro End Date'
     },
     break_end: {
-        type: Date
+        type: Date,
+        label: 'Pomodoro Break End Date'
     },
-    is_running: {
-        type: Boolean,
-        defaultValue: true
-    },
-    is_done: {
-        type: Boolean,
-        defaultValue: false
+    state: {
+        type: Number,
+        min: -1,
+        max: 3,
+        defaultValue: 0,
+        label: 'Pomodoro State'
     },
     description: {
         type: String,
         max: 200,
         optional: true,
+        label: 'Pomodoro Description'
         // defaultValue: ''
     }
 });

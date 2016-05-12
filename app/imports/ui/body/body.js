@@ -15,8 +15,5 @@ Template.body.onCreated(function() {
 Template.body.helpers({
     pomodori: function() {
         return Pomodori.find();
-    },
-    toString: function(val) {
-        return val.toString();
     }
 });
