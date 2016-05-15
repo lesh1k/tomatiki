@@ -2,6 +2,8 @@
     {{#if Template.subscriptionsReady}}
         <h1>Tomatiki</h1>
         <hr>
+        {{> pomodoro}}
+        <hr>
         <h3>Pomodori</h3>
         <table border="2">
             <thead>
@@ -23,8 +25,6 @@
                 {{/each}}
             </tbody>
         </table>
-        <hr>
-        {{> pomodoro}}
     {{else}}
         <h3>Loading...</h3>
     {{/if}}

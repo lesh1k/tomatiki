@@ -7,7 +7,7 @@ import { Pomodori } from '../api/pomodori/pomodori.js';
 const DEFAULTS = {
     pomodoro: {
         hours: 0,
-        minutes: 5,
+        minutes: .25,
         seconds: 0,
         miliseconds: 0,
         interval_ms: 200
@@ -15,16 +15,16 @@ const DEFAULTS = {
     break: {
         hours: 0,
         minutes: 0,
-        seconds: 20,
+        seconds: 10,
         miliseconds: 0,
     },
     long_break: {
         hours: 0,
-        minutes: 1,
-        seconds: 0,
+        minutes: 0,
+        seconds: 20,
         miliseconds: 0,
     },
-    long_break_interval: 4
+    pomodori_before_long_break: 4
 };
 
 export class Pomodoro {
@@ -53,6 +53,8 @@ export class Pomodoro {
         for (let p of pomodori) {
             if (p.break_end - now > Timer.epsilon()) {
                 return p;
+            } else {
+                Meteor.call('pomodori.markDone', p._id);
             }
         }
     }
@@ -129,7 +131,7 @@ export class Pomodoro {
 
     getBreakDuration(pomodoro_count = this.counter.count.get()) {
         let time = this.settings.break;
-        if (pomodoro_count > 0 && pomodoro_count % this.settings.long_break_interval === 0) {
+        if (pomodoro_count > 0 && pomodoro_count % this.settings.pomodori_before_long_break === 0) {
             time = this.settings.long_break;
         }
 
@@ -164,7 +166,7 @@ export class Pomodoro {
             $and: [
                 {end: {$gte: start_date}},
                 {end: {$lte: end_date}},
-                {state: 3}
+                {state: {$gte: 2}}
             ]
         }).count();
     }

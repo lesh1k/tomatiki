@@ -13,6 +13,6 @@ Template.body.onCreated(function() {
 
 Template.body.helpers({
     pomodori: function() {
-        return Pomodori.find();
+        return Pomodori.find({}, {sort: {break_end: -1}});
     }
 });
