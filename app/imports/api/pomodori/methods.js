@@ -3,12 +3,25 @@ import { Pomodori } from './pomodori.js';
 
 
 Meteor.methods({
-    'pomodori.insert'({end, break_end, description, state}) {
+    'pomodori.createNew'() {
+        let new_pomodoro = Pomodori.findOne({state: 0});
+        if (new_pomodoro) {
+            return new_pomodoro._id;
+        }
+
         return Pomodori.insert({
-            end: end,
-            break_end: break_end,
-            description: description,
-            state: state,
+            end: new Date(),
+            break_end: new Date(),
+        });
+    },
+    'pomodori.update'({_id, end, break_end, description, state}) {
+        return Pomodori.update(_id, {
+            $set: {
+                end: end,
+                break_end: break_end,
+                description: description,
+                state: state,
+            }
         });
     },
     'pomodori.markBreak'(id) {

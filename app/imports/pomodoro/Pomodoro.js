@@ -37,21 +37,35 @@ export class Pomodoro {
         let pomodori_count = Pomodoro.getTodayPomodoriCount();
         this.counter = new Counter({amount: pomodori_count});
 
-        let pomodoro = this.getRunningIfExists();
+        let pomodoro = this.getUnfinishedIfExists();
         if (pomodoro) {
-            this.restore(pomodoro);
+            if (pomodoro.state > 0) {
+                this.restore(pomodoro);
+            } else {
+                this.id = pomodoro._id;
+            }
+            this.state = pomodoro.state;
+            this.pomodoro = pomodoro;
+        } else {
+            Meteor.call('pomodori.createNew', (error, result) => {
+                this.id = result;
+                this.state = Pomodori.findOne({_id: this.id}).state;
+                this.pomodoro = Pomodori.findOne({_id: this.id});
+            });
         }
 
         this.setupTracker();
     }
 
-    getRunningIfExists() {
+    getUnfinishedIfExists() {
         let pomodori = Pomodoro.fetchIncomplete();
         if (!pomodori.length) return;
 
         let now = new Date();
         for (let p of pomodori) {
-            if (p.break_end - now > Timer.epsilon()) {
+            let is_new = p.state === 0,
+                is_running = p.break_end - now > Timer.epsilon();
+            if (is_new || is_running) {
                 return p;
             } else {
                 Meteor.call('pomodori.markDone', p._id);
@@ -76,6 +90,7 @@ export class Pomodoro {
 
     setupTracker() {
         Tracker.autorun(() => {
+            console.log(this.pomodoro)
             if (this.timer.is_done.get()) {
                 if (this.is_break) {
                     this.finishBreak();
@@ -91,15 +106,15 @@ export class Pomodoro {
             end = Timer.computeEndDate(this.timer.duration),
             break_end = Timer.computeEndDate(next_break_duration, end);
 
-        if (!this.id) {
-            this.id = Meteor.call('pomodori.insert', {
+        if (this.state === 0) {
+            Meteor.call('pomodori.update', {
+                _id: this.id,
                 end: end,
                 break_end: break_end,
                 description: pomodoro_description,
                 state: 1 // Running
             }, (error, result) => {
                 if (result) {
-                    this.id = result;
                     this.timer.start();
                 } else {
                     throw new Meteor.Error(error);
@@ -152,7 +167,7 @@ export class Pomodoro {
 
     static fetchIncomplete() {
         // Find running or breakRunning pomodori
-        return Pomodori.find({state: {$in: [1, 2]}}).fetch();
+        return Pomodori.find({state: {$in: [0, 1, 2]}}).fetch();
     }
 
     static getTodayPomodoriCount() {
