@@ -37,20 +37,39 @@ export class Pomodoro {
         let pomodori_count = Pomodoro.getTodayPomodoriCount();
         this.counter = new Counter({amount: pomodori_count});
 
-        // this.restoreRunningIfExists();
+        let pomodoro = this.getRunningIfExists();
+        if (pomodoro) {
+            this.restore(pomodoro);
+        }
+
         this.setupTracker();
     }
 
-    restoreRunningIfExists() {
-        let pomodori = Pomodoro.fetchIncomplete().toArray();
+    getRunningIfExists() {
+        let pomodori = Pomodoro.fetchIncomplete();
         if (!pomodori.length) return;
 
         let now = new Date();
-        pomodori.forEach((p) => {
-            if (p.end < now || p.break_end < now) {
-                this.id = p._id;
+        for (let p of pomodori) {
+            if (p.break_end - now > Timer.epsilon()) {
+                return p;
             }
-        });
+        }
+    }
+
+    restore(pomodoro) {
+        let now = new Date();
+
+        this.id = pomodoro._id;
+
+        let ms_left = pomodoro.end - now;
+        if (ms_left <= 0) {
+            ms_left = pomodoro.break_end - now;
+            this.is_break = true;
+        }
+
+        this.timer.set({miliseconds: ms_left})
+        this.start();
     }
 
     setupTracker() {
@@ -70,19 +89,23 @@ export class Pomodoro {
             end = Timer.computeEndDate(this.timer.duration),
             break_end = Timer.computeEndDate(next_break_duration, end);
 
-        this.id = Meteor.call('pomodori.insert', {
-            end: end,
-            break_end: break_end,
-            description: pomodoro_description,
-            state: 1 // Running
-        }, (error, result) => {
-            if (result) {
-                this.id = result;
-                this.timer.start();
-            } else {
-                throw new Meteor.Error(error);
-            }
-        });
+        if (!this.id) {
+            this.id = Meteor.call('pomodori.insert', {
+                end: end,
+                break_end: break_end,
+                description: pomodoro_description,
+                state: 1 // Running
+            }, (error, result) => {
+                if (result) {
+                    this.id = result;
+                    this.timer.start();
+                } else {
+                    throw new Meteor.Error(error);
+                }
+            });
+        } else {
+            this.timer.start();
+        }
     }
 
     stop() {
@@ -126,9 +149,8 @@ export class Pomodoro {
     }
 
     static fetchIncomplete() {
-        let now = new Date();
         // Find running or breakRunning pomodori
-        return Pomodori.find({state: {$in: [1, 2]}});
+        return Pomodori.find({state: {$in: [1, 2]}}).fetch();
     }
 
     static getTodayPomodoriCount() {

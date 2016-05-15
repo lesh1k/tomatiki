@@ -6,25 +6,30 @@ import './pomodoro_counter.js';
 import './pomodoro.html';
 
 
-const POMODORO = new Pomodoro();
 
 Template.pomodoro.onCreated(function() {
+    let tmpl = Template.instance();
+
     this.subscribe('pomodori', () => {
-        POMODORO.counter.count.set(Pomodoro.getTodayPomodoriCount());
+        tmpl.pomodoro = new Pomodoro();
+        tmpl.pomodoro.counter.count.set(Pomodoro.getTodayPomodoriCount());
     });
 });
 
 Template.pomodoro.helpers({
     POMODORO: function() {
-        return POMODORO;
+        let pomodoro = Template.instance().pomodoro;
+        return pomodoro;
     }
 });
 
 Template.pomodoro.events({
     'click .start': function() {
-        POMODORO.start();
+        let pomodoro = Template.instance().pomodoro;
+        pomodoro.start();
     },
     'click .stop': function() {
-        POMODORO.stop();
+        let pomodoro = Template.instance().pomodoro;
+        pomodoro.stop();
     }
 });

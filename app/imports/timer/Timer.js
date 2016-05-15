@@ -21,7 +21,8 @@ const DEFAULTS = {
         seconds: 0,
         miliseconds: 0
     },
-    interval_ms: 1000
+    interval_ms: 1000,
+    epsilon: 50
 }
 
 
@@ -155,5 +156,9 @@ export class Timer {
         hours && (total_ms += hours * DEFAULTS.seconds_in_hour * DEFAULTS.ms_in_second);
 
         return total_ms;
+    }
+
+    static epsilon() {
+        return DEFAULTS.epsilon;
     }
 };
