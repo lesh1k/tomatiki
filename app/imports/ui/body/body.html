@@ -1,27 +1,31 @@
 <body>
-    <h1>Tomatiki</h1>
-    <hr>
-    <h3>Pomodori</h3>
-    <table border="2">
-        <thead>
-            <tr>
-                <td>Ends</td>
-                <td>Break ends</td>
-                <td>State</td>
-                <td>Description</td>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each pomodori}}
+    {{#if Template.subscriptionsReady}}
+        <h1>Tomatiki</h1>
+        <hr>
+        <h3>Pomodori</h3>
+        <table border="2">
+            <thead>
                 <tr>
-                    <td>{{ end }}</td>
-                    <td>{{ break_end }}</td>
-                    <td>{{ state }}</td>
-                    <td>{{ description }}</td>
+                    <td>Ends</td>
+                    <td>Break ends</td>
+                    <td>State</td>
+                    <td>Description</td>
                 </tr>
-            {{/each}}
-        </tbody>
-    </table>
-    <hr>
-    {{> pomodoro}}
+            </thead>
+            <tbody>
+                {{#each pomodori}}
+                    <tr>
+                        <td>{{ end }}</td>
+                        <td>{{ break_end }}</td>
+                        <td>{{ state }}</td>
+                        <td>{{ description }}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <hr>
+        {{> pomodoro}}
+    {{else}}
+        <h3>Loading...</h3>
+    {{/if}}
 </body>

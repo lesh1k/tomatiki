@@ -1,4 +1,3 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import './body.html';
@@ -9,7 +8,7 @@ import { Pomodori } from '../../api/pomodori/pomodori.js';
 
 
 Template.body.onCreated(function() {
-    Meteor.subscribe('pomodori');
+    this.subscribe('pomodori');
 });
 
 Template.body.helpers({

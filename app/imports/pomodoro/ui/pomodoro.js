@@ -5,21 +5,26 @@ import './pomodoro_timer.js';
 import './pomodoro_counter.js';
 import './pomodoro.html';
 
+
 const POMODORO = new Pomodoro();
 
-Template.pomodoroTimer.onCreated(function() {
-    this.timer = POMODORO.timer;
+Template.pomodoro.onCreated(function() {
+    this.subscribe('pomodori', () => {
+        POMODORO.counter.count.set(Pomodoro.getTodayPomodoriCount());
+    });
 });
 
-Template.pomodoroCounter.onCreated(function() {
-    this.counter = POMODORO.counter;
+Template.pomodoro.helpers({
+    POMODORO: function() {
+        return POMODORO;
+    }
 });
 
 Template.pomodoro.events({
-    'click .start': function(event) {
+    'click .start': function() {
         POMODORO.start();
     },
-    'click .stop': function(event) {
+    'click .stop': function() {
         POMODORO.stop();
     }
 });

@@ -1,6 +1,10 @@
 <template name="pomodoro">
     <div id="pomodoro" class="pomodoro">
-        {{> pomodoroTimer}}
-        {{> pomodoroCounter}}
+        {{#if Template.subscriptionsReady}}
+            {{> pomodoroTimer timer=POMODORO.timer}}
+            {{> pomodoroCounter counter=POMODORO.counter}}
+        {{else}}
+            <p>Loading...</p>
+        {{/if}}
     </div>
 </template>

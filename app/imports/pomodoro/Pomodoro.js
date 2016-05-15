@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Timer } from '../timer/Timer.js';
 import { Counter } from '../counter/Counter.js';
 import { Pomodori } from '../api/pomodori/pomodori.js';
@@ -31,8 +32,27 @@ export class Pomodoro {
         this.is_break = false;
 
         this.timer = new Timer(this.settings.pomodoro);
-        this.counter = new Counter({amount: 0});
 
+        let pomodori_count = Pomodoro.getTodayPomodoriCount();
+        this.counter = new Counter({amount: pomodori_count});
+
+        // this.restoreRunningIfExists();
+        this.setupTracker();
+    }
+
+    restoreRunningIfExists() {
+        let pomodori = Pomodoro.fetchIncomplete().toArray();
+        if (!pomodori.length) return;
+
+        let now = new Date();
+        pomodori.forEach((p) => {
+            if (p.end < now || p.break_end < now) {
+                this.id = p._id;
+            }
+        });
+    }
+
+    setupTracker() {
         Tracker.autorun(() => {
             if (this.timer.is_done.get()) {
                 if (this.is_break) {
@@ -104,7 +124,25 @@ export class Pomodoro {
         });
     }
 
-    static fetchRunning() {
-        // Pomodori
+    static fetchIncomplete() {
+        let now = new Date();
+        // Find running or breakRunning pomodori
+        return Pomodori.find({state: {$in: [1, 2]}});
+    }
+
+    static getTodayPomodoriCount() {
+        let start_date = new Date(),
+            end_date = new Date();
+
+        start_date.setHours(0, 0, 0, 0);
+        end_date.setHours(23, 59, 59, 999);
+
+        return Pomodori.find({
+            $and: [
+                {end: {$gte: start_date}},
+                {end: {$lte: end_date}},
+                {state: 3}
+            ]
+        }).count();
     }
 }
