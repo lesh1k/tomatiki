@@ -7,20 +7,21 @@ import { Pomodori } from '../api/pomodori/pomodori.js';
 const DEFAULTS = {
     pomodoro: {
         hours: 0,
-        minutes: 0,
-        seconds: 3,
+        minutes: 5,
+        seconds: 0,
         miliseconds: 0,
+        interval_ms: 200
     },
     break: {
         hours: 0,
         minutes: 0,
-        seconds: 2,
+        seconds: 20,
         miliseconds: 0,
     },
     long_break: {
         hours: 0,
-        minutes: 0,
-        seconds: 4,
+        minutes: 1,
+        seconds: 0,
         miliseconds: 0,
     },
     long_break_interval: 4
