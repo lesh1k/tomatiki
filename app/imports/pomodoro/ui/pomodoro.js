@@ -1,10 +1,10 @@
 import { Template } from 'meteor/templating';
-
+import { Tracker } from 'meteor/tracker';
 import { Pomodoro } from '../Pomodoro.js';
+import { Pomodori } from '../../api/pomodori/pomodori.js';
 import './pomodoro_timer.js';
 import './pomodoro_counter.js';
 import './pomodoro.html';
-
 
 
 Template.pomodoro.onCreated(function() {

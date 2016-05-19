@@ -37,7 +37,7 @@ export class Pomodoro {
         let pomodori_count = Pomodoro.getTodayPomodoriCount();
         this.counter = new Counter({amount: pomodori_count});
 
-        let pomodoro = this.getUnfinishedIfExists();
+        let pomodoro = Pomodoro.getUnfinishedIfExists();
         if (pomodoro) {
             if (pomodoro.state > 0) {
                 this.restore(pomodoro);
@@ -45,19 +45,37 @@ export class Pomodoro {
                 this.id = pomodoro._id;
             }
             this.state = pomodoro.state;
-            this.pomodoro = pomodoro;
         } else {
             Meteor.call('pomodori.createNew', (error, result) => {
                 this.id = result;
                 this.state = Pomodori.findOne({_id: this.id}).state;
-                this.pomodoro = Pomodori.findOne({_id: this.id});
             });
         }
+
+        let self = this;
+        Pomodori.find().observeChanges({
+            changed(id, fields) {
+                if (id === self.id) {
+                    if (fields.state === 1) {
+                        let pomodoro = _.extend(fields, {_id: id});
+                        self.restore(pomodoro);
+                    } else if (fields.state === -1) {
+                        self.stop();
+                    }
+                }
+            },
+            added(id, fields) {
+                if (self.id !== id) {
+                    self.id = id;
+                    self.state = fields.state;
+                }
+            },
+        });
 
         this.setupTracker();
     }
 
-    getUnfinishedIfExists() {
+    static getUnfinishedIfExists() {
         let pomodori = Pomodoro.fetchIncomplete();
         if (!pomodori.length) return;
 
@@ -90,7 +108,6 @@ export class Pomodoro {
 
     setupTracker() {
         Tracker.autorun(() => {
-            console.log(this.pomodoro)
             if (this.timer.is_done.get()) {
                 if (this.is_break) {
                     this.finishBreak();
@@ -106,6 +123,16 @@ export class Pomodoro {
             end = Timer.computeEndDate(this.timer.duration),
             break_end = Timer.computeEndDate(next_break_duration, end);
 
+        if (!this.id) {
+            Meteor.call('pomodori.createNew', (error, result) => {
+                this.id = result;
+                this.state = Pomodori.findOne({_id: this.id}).state;
+                if (!this.timer.is_running) {
+                    this.start();
+                }
+            });
+        }
+
         if (this.state === 0) {
             Meteor.call('pomodori.update', {
                 _id: this.id,
@@ -114,9 +141,9 @@ export class Pomodoro {
                 description: pomodoro_description,
                 state: 1 // Running
             }, (error, result) => {
-                if (result) {
+                if (result && !this.timer.is_running) {
                     this.timer.start();
-                } else {
+                } else if (error) {
                     throw new Meteor.Error(error);
                 }
             });
@@ -128,7 +155,12 @@ export class Pomodoro {
     stop() {
         this.timer.set(this.settings.pomodoro);
         this.timer.reset();
-        Meteor.call('pomodori.markReset', this.id);
+        Meteor.call('pomodori.markReset', this.id, (error) => {
+            if (error) {
+                throw new Meteor.Error(error);
+            }
+        });
+        this.id = void 0;
     }
 
     finishPomodoro() {
@@ -161,8 +193,8 @@ export class Pomodoro {
             if (error) {
                 throw new Meteor.Error(error);
             }
-            this.id = void 0;
         });
+        this.id = void 0;
     }
 
     static fetchIncomplete() {
