@@ -12,7 +12,7 @@ Template.pomodoro.onCreated(function() {
 
     this.subscribe('pomodori', () => {
         tmpl.pomodoro = new Pomodoro();
-        tmpl.pomodoro.counter.count.set(Pomodoro.getTodayPomodoriCount());
+        tmpl.pomodoro.counter.count.set(Pomodoro.getCompletedTodayCount());
     });
 });
 

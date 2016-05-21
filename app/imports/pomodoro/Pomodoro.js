@@ -37,6 +37,7 @@ export class Pomodoro {
 
         let pomodori_count = Pomodoro.getCompletedTodayCount();
         this.counter = new Counter(pomodori_count);
+        console.log(pomodori_count)
 
         let pomodoro = Pomodoro.getUnfinishedIfExists();
         if (pomodoro) {
@@ -185,6 +186,8 @@ export class Pomodoro {
             if (is_running) {
                 return p;
             } else {
+                console.log(p, p.break_end - new Date());
+                console.log('yopta')
                 Meteor.call('pomodori.markDone', p._id);
             }
         }
@@ -192,12 +195,15 @@ export class Pomodoro {
 
     static fetchIncomplete() {
         // Find running or breakRunning pomodori
-        return Pomodori.find({state: {$in: [0, 1, 2]}}).fetch();
+        return Pomodori.find({state: {$in: [1, 2]}}).fetch();
     }
 
     static getCompletedTodayCount() {
-        let start_date = (new Date()).setHours(0, 0, 0, 0),
-            end_date = (new Date()).setHours(23, 59, 59, 999);
+        let start_date = new Date(),
+            end_date = new Date();
+
+        start_date.setHours(0, 0, 0, 0);
+        end_date.setHours(23, 59, 59, 999);
 
         return Pomodori.find({
             $and: [
