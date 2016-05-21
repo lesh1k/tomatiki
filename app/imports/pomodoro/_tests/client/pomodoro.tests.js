@@ -35,16 +35,18 @@ describe('Pomodoro', () => {
         });
 
         it('Does not increment counter on timer.is_done if it is a break', () => {
-            let pomodoro = new Pomodoro();
+            let pomodoro = new Pomodoro(),
+                count = pomodoro.counter.count.get();
+
             pomodoro.is_break = true;
             pomodoro.timer.is_done.set(true);
             Tracker.flush();
-            chai.assert.strictEqual(pomodoro.counter.count.get(), 0);
+            chai.assert.strictEqual(pomodoro.counter.count.get(), count);
         });
 
         it('Starts a long break if count == settings.long_break_interval', () => {
             let config = {
-                long_break_interval: 2,
+                pomodori_before_long_break: 2,
                 long_break: {
                         hours: 0,
                         minutes: 0,

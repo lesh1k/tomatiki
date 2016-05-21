@@ -112,8 +112,8 @@ export class Timer {
 
     countdown() {
         let now = new Date().getTime(),
-            ellapsed = now - this.started,
-            ms_left = this.duration - ellapsed;
+            elapsed = now - this.started,
+            ms_left = this.duration - elapsed;
 
         if (ms_left <= 0) {
             this.milisecondsToTime(0);

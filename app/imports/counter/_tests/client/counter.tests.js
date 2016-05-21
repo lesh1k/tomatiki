@@ -20,38 +20,38 @@ describe('Counter', () => {
         });
 
         it('Sets Counter.count to the supplied value', () => {
-            let counter = new Counter({ count: 5 });
+            let counter = new Counter(5);
             chai.assert.strictEqual(counter.count.get(), 5);
         });
 
     });
 
-    describe('Counter.increment', () => {
+    describe('Counter.inc', () => {
 
         it('Increments Counter.count by 1 by default', () => {
             let counter = new Counter();
-            counter.increment();
+            counter.inc();
             chai.assert.strictEqual(counter.count.get(), 1);
         });
 
         it('Increments Counter.count with the supplied value', () => {
             let counter = new Counter();
-            counter.increment({ amount: 7 });
+            counter.inc(7);
             chai.assert.strictEqual(counter.count.get(), 7);
         });
     });
 
-    describe('Counter.decrement', () => {
+    describe('Counter.dec', () => {
 
         it('Decrements Counter.count by 1 by default', () => {
-            let counter = new Counter({ count: 5 });
-            counter.decrement();
+            let counter = new Counter(5);
+            counter.dec();
             chai.assert.strictEqual(counter.count.get(), 4);
         });
 
         it('Decrements Counter.count with the supplied value', () => {
-            let counter = new Counter({ count: 5 });
-            counter.decrement({ amount: 5 });
+            let counter = new Counter(5);
+            counter.dec(5);
             chai.assert.strictEqual(counter.count.get(), 0);
         });
 
